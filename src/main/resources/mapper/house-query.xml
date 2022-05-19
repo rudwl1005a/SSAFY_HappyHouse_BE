@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.mycom.happyHouse.dao.HouseDao">
+
+	<!-- 통합 검색 쿼리 -->
+   <select id="getSearchHouseInfo" parameterType="com.mycom.happyHouse.dto.HouseSearchParamDto" resultType="com.mycom.happyHouse.dto.HouseInfoDto">
+		select h.aptCode, h.aptName, h.buildyear, h.dongName, h.jibun, si.sidoname, gu.gugunname, h.lat, h.lng,
+				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice
+		from houseinfo h 
+		left join sidocode si
+		on left(h.dongcode,2) = left(si.sidocode,2)
+		left join guguncode gu
+		on left(h.dongcode,5) = left(gu.guguncode,5)
+		where 1 = 1 
+		<if test="aptKeyword != null and aptKeyword != ''"> 
+		AND aptName LIKE CONCAT('%', #{aptKeyword}, '%')  
+		</if> 
+		<if test="sidoCode != null and sidoCode != ''"> 
+		AND left(dongCode,2) = #{sidoCode} 
+		</if>
+		<if test="gugunCode != null and gugunCode != ''"> 
+		AND left(dongCode, 5) = #{gugunCode} 
+		</if>
+		<if test="dongCode != null and dongCode != ''"> 
+		AND dongCode = #{dongCode} 
+		</if>
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<select id="getCountHouseInfo" parameterType="com.mycom.happyHouse.dto.HouseSearchParamDto" resultType="int">
+		select count(aptCode) 
+		from houseinfo 
+		where 1 = 1 
+		<if test="aptKeyword != null and aptKeyword != ''"> 
+		AND aptName LIKE CONCAT('%', #{aptKeyword}, '%')  
+		</if> 
+		<if test="sidoCode != null and sidoCode != ''"> 
+		AND left(dongCode,2) = #{sidoCode} 
+		</if>
+		<if test="gugunCode != null and gugunCode != ''"> 
+		AND left(dongCode, 5) = #{gugunCode} 
+		</if>
+		<if test="dongCode != null and dongCode != ''"> 
+		AND dongCode = #{dongCode} 
+		</if>
+	</select>
+	
+	<!-- 상세 검색 쿼리 -->
+	<select id="getHouseInfoByAptCode" parameterType="int" resultType="com.mycom.happyHouse.dto.HouseInfoDto">
+		select h.aptCode, h.aptName, h.buildyear, h.dongCode, h.dongName, h.jibun, h.lat, h.lng, si.sidoname, gu.gugunname
+		from houseinfo h 
+		left join sidocode si
+		on left(h.dongcode,2) = left(si.sidocode,2)
+		left join guguncode gu
+		on left(h.dongcode,5) = left(gu.guguncode,5)
+		where aptCode = #{aptCode}
+	</select>
+
+	<!-- 아파트 거래내역 쿼리 -->
+   <select id="getHouseDealList" parameterType="int" resultType="com.mycom.happyHouse.dto.HouseDealDto">
+		select no, aptCode, dealAmount, dealYear, dealMonth, dealDay, area, floor, type, rentMoney
+		from housedeal
+		where aptCode = #{aptCode}
+	</select>
+
+	<!-- 지하철 후보군 검색 쿼리 -->
+	<select id="getSubwayList" parameterType="int" resultType="com.mycom.happyHouse.dto.SubwayDto">
+	   <![CDATA[
+		SELECT subway_id, line, station, sub.lat, sub.lng,
+		LEFT((6371*acos(cos(radians( apt.lat ))*cos(radians( sub.lat) )*cos( radians( sub.lng )
+			-radians( apt.lng ))+sin(radians( apt.lat ))*sin( radians(sub.lat )))), 5) AS distance  
+		FROM subway sub, 
+		(SELECT lat, lng FROM houseinfo where aptCode = #{aptCode}) as apt
+		WHERE (6371*acos( cos( radians( apt.lat )) * cos(radians( sub.lat )) * cos(radians( sub.lng )
+			-radians( apt.lng ))+sin( radians( apt.lat ))*sin( radians( sub.lat )))) <= 2
+		]]>
+	</select>
+	
+	
+</mapper>

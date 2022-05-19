@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	<!-- https://getbootstrap.com/docs/5.0/getting-started/introduction/ -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+	<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.12.0/build/alertify.min.js"></script>
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.12.0/build/css/alertify.min.css"/>
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.12.0/build/css/themes/default.min.css"/>
+<title>HappyHouse</title>
+</head>
+<body>
+	<custom-navbar></custom-navbar>
+
+	<div class="container">
+		<br>
+		<br>
+		<h1>HappyHouse</h1>
+		
+		<br>
+			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+			  <div class="carousel-indicators">
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+			    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+			  </div>
+			  <div class="carousel-inner">
+			    <div class="carousel-item active">
+			      <img src="/img/house1.jpg" class="d-block w-100" alt="..." style="width: 500px; height: 600px">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="/img/house2.png" class="d-block w-100" alt="..." style="width: 500px; height: 600px">
+			    </div>
+			    <div class="carousel-item">
+			      <img src="/img/house3.jpg" class="d-block w-100" alt="..." style="width: 500px; height: 600px">
+			    </div>
+			  </div>
+			  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+			    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			    <span class="visually-hidden">Previous</span>
+			  </button>
+			  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+			    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+			    <span class="visually-hidden">Next</span>
+			  </button>
+			</div>
+		<br>
+		<h3 style="text-align: center">공지 사항</h3>
+		<table class="table" style="text-align: center">
+		  <thead>
+		    <tr style="color: red">
+		      <th scope="col" class="col-1">#</th>
+		      <th scope="col" class="col-5">내용</th>
+		      <th scope="col" class="col-2">작성자</th>
+		      <th scope="col" class="col-1">날짜</th>
+		    </tr>
+		  </thead>
+		  <tbody id="noticeList">
+		  </tbody>
+		</table>
+		
+		<div id="noticeWrite"></div>
+		<br>
+		<br>
+		
+	</div>
+
+<script src="/js/customTag.js"></script>	
+<script src="/js/navbar.js"></script>	
+<script>
+	window.onload = function(){
+		
+		customElements.define('custom-navbar', NavBarClass);
+		
+		navBar();
+		
+		noticeList();
+		
+		if(sessionStorage.getItem("authority") == "1"){
+			document.querySelector("#noticeWrite").innerHTML =
+				`<div class="d-flex flex-row-reverse bd-highlight">
+				  <button id="noticeWriteBtn" type="button" class="p-2 bd-highlight btn btn-outline-info">글쓰기</button>
+				</div>`;
+		}
+		
+	}
+	
+	async function noticeList(){
+		
+		try{
+	        let response = await fetch('/notices');
+	        let data = await response.json();
+	        console.log(data);
+	        
+	        makeListHtml(data);
+	    }catch(error){
+	    	console.error( error );
+	    	alertify.error('글 조회 과정에 문제가 생겼습니다.');
+	    }
+	}
+	
+	function makeListHtml(list){
+		console.log(list);
+		
+		let listHTML = ``;
+		
+		list.forEach( el => {
+			let boardId = el.boardId;
+			let contents = el.contents;
+			let writer = el.writer;
+			let date = el.date;
+			
+			listHTML += `<tr style="cursor:pointer" data-boardId=${boardId}>
+							<td class="col-1">${boardId}</td>
+							<td class="col-5">${contents}</td>
+							<td class="col-2">${writer}</td>
+							<td class="col-1">${date}</td>
+						</tr>`;
+		});
+		
+	
+		document.querySelector("#noticeList").innerHTML = listHTML;
+	}
+	
+</script>
+</body>
+</html>

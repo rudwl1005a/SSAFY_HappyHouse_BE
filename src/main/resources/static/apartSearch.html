@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Framework Project</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<link rel="stylesheet" href="/css/apt.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<custom-navbar></custom-navbar>
+	
+	<div class="container mt-4">
+		<div class="card col-sm-12 mt-1" style="min-height: 600px;">
+			<div class="card-body">
+				<div class="row">
+					<div class="col form-group form-inline justify-content-center">
+						<div class="row">
+							<select class="col form-select-sm m-2" id="sido">
+								<option value="0">시/도</option>
+							</select>
+							<select class="col form-select-sm m-2" id="gugun">
+								<option value="0">구/군</option>
+							</select>
+							<select class="col form-select-sm m-2" id="dong">
+								<option value="0">읍/면/동</option>
+							</select>
+						</div>
+					</div>
+					<div class="col input-group mb-3 pt-1">
+						<input type="text" class="form-control " placeholder="아파트명" id="aptKeyword">
+						<button class="btn btn-outline-info" type="button" id="btnAptSearch">검색</button>
+					</div>
+				</div>
+					
+				<!-- 정렬하기와 한 페이지 최대 개수 추가 -->
+				<div class="row">
+					<div class="col">
+						<div class="row leftSide">
+							<div class="card">
+							  <ul class="list-group list-group-flush" id="searchResult"></ul>
+							</div>
+						</div>
+						<div id="paginationWrapper" class="row mt-3"></div>   	
+					</div>
+					<div class="col rightSide ">
+						<div id="map" style="width:100%; height:700px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+		
+	<!-- Modal -->
+	<div class="modal fade" id="modalApartDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" style="max-width: 100%; width: 60%; display: table;">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="modalApartDetailTitle">아파트 상세 정보</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body leftSide" style="height: 500px">
+	      	<div class="row" id="divApartInfo"></div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary" id="btnUserInterestApart">관심 아파트 등록</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>	
+	<!-- Modal end -->
+
+	<script src="/js/customTag.js"></script>	
+	<script src="/js/navbar.js"></script>	
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a8f020994a96fc4cd4e8374ac86e3ac9&libraries=services"></script>
+	<script type="text/javascript" src="js/map.js"></script>
+	<script type="text/javascript" src="js/util.js"></script>
+	<script type="text/javascript">
+	var LIST_ROW_COUNT = 10;	//limit
+	var OFFSET = 0;
+	var PAGE_LINK_COUNT = 10;	// pagination link 갯수
+	var TOTAL_LIST_ITEM_COUNT = 0;
+	var CURRENT_PAGE_INDEX = 1;
+	
+	window.onload = function(){
+		
+		customElements.define('custom-navbar', NavBarClass);
+		
+		navBar();
+		
+		getSido();
+		document.querySelector("#sido").onchange = getGugun;
+		document.querySelector("#gugun").onchange = getDong;
+		document.querySelector("#dong").onchange = function(){
+			OFFSET = 0;
+			CURRENT_PAGE_INDEX = 1;
+			getSearchResult();
+		};
+		
+		document.querySelector("#btnAptSearch").onclick = function(){
+			OFFSET = 0;
+			CURRENT_PAGE_INDEX = 1;
+			getSearchResult();
+		};
+	};
+	
+	async function getSido(){
+		let url = "/address/sido"
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		let sidoHTML = document.querySelector("#sido");
+		let optionHTML = ``;
+		
+		data.forEach(el => {
+			optionHTML += `<option value=${el.sidoCode}>${el.sidoName}</option>`
+
+		});
+		sidoHTML.options.length = 1;
+		sidoHTML.innerHTML += optionHTML;
+		
+	};
+	
+	async function getGugun(){
+		let gugunHTML = document.querySelector("#gugun");
+		gugunHTML.options.length = 1;
+		document.querySelector("#dong").options.length = 1;
+		
+		let sidoValue = document.querySelector("#sido").value;
+		
+		if(sidoValue == "0" ){
+			document.querySelector("#searchResult").innerHTML = "";
+			return;
+		}
+		
+		let url = "/address/gugun/" + sidoValue;
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		let optionHTML = ``;
+		
+		data.forEach(el => {
+			optionHTML += `<option value=${el.gugunCode}>${el.gugunName}</option>`
+
+		});
+		
+		gugunHTML.innerHTML += optionHTML;
+		
+		OFFSET = 0;
+		CURRENT_PAGE_INDEX = 1;
+		getSearchResult();
+	};
+	
+	async function getDong(){
+		let dongHTML = document.querySelector("#dong");
+		dongHTML.options.length = 1;
+		
+		let gugunValue = document.querySelector("#gugun").value;
+		
+		if(gugunValue == "0" ){
+			document.querySelector("#searchResult").innerHTML = "";
+			return;
+		}
+		
+		let url = "/address/dong/" + gugunValue;
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		let optionHTML = ``;
+		
+		data.forEach(el => {
+			optionHTML += `<option value=${el.dongCode}>${el.dongName}</option>`
+
+		});
+		
+		dongHTML.innerHTML += optionHTML;
+		
+		OFFSET = 0;
+		CURRENT_PAGE_INDEX = 1;
+		getSearchResult();
+	};
+					
+	function getURL(){
+		let url = "/aparts/all?limit="+LIST_ROW_COUNT+"&offset="+OFFSET;
+		let sidoVal = document.querySelector("#sido").value;
+		let gugunVal = document.querySelector("#gugun").value;
+		let dongVal = document.querySelector("#dong").value;
+		let aptKeyword = document.querySelector("#aptKeyword").value;
+		
+		if(dongVal != "0"){
+			url += "&dongCode="+dongVal;
+		}
+		else if(gugunVal != "0"){
+			url += "&gugunCode="+gugunVal;
+		}
+		else if(sidoVal != "0"){
+			url += "&sidoCode="+sidoVal;
+		}
+		
+		if(aptKeyword != ""){
+			url += "&aptKeyword="+aptKeyword
+		}
+		
+		return url;
+	}
+	
+	async function getSearchResult(){
+		let url = getURL();
+		
+		console.log(url);
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		console.log(data);
+		
+		let searchTable = document.querySelector("#searchResult");
+		searchTable.innerHTML = "";
+		
+		data.list.forEach(el => {
+			/*searchTable.innerHTML += `<tr data-aptCode=${el.aptCode}>
+									  <td>${el.aptCode}</td>
+									  <td>${el.aptName}</td>
+									  <td>${el.sidoName} ${el.gugunName} ${el.dongName} ${el.jibun}</td>
+									  <td>${el.buildYear}</td>
+									  <td>${el.recentPrice}</td>`*/
+			searchTable.innerHTML += 
+				`<li class="list-group-item" data-aptCode=${el.aptCode} style="cursor: pointer">
+				    <div class="row">
+		    			<div class="col-2 mt-1">${el.aptCode}</div>
+		    			<div class="col-8"><strong style="font-size: 20px">${el.aptName}</strong></div>
+		    			<div class="col-2 mt-1" style="color: gray">${el.buildYear}</div>
+			    	</div>
+			    	<div class="row m-3" style="font-size: 18px">
+			    		${el.sidoName} ${el.gugunName} ${el.dongName} ${el.jibun}
+			    	</div>
+			    	<div class="row m-2">최근거래금액 : ${el.recentPrice}만원</div>
+			    </li>`
+		});
+		TOTAL_LIST_ITEM_COUNT = data.count;
+		addPagination();
+		
+		//history.pushState(null, null, url);
+		makeListEvetHandler();
+		displayMarkers(data.list);
+	};
+	
+	function makeListEvetHandler(){
+		document.querySelectorAll("#searchResult li").forEach( el =>{
+			el.onclick = function(){
+				let aptCode = this.getAttribute("data-aptCode");
+				console.log("detailApart : " + aptCode);
+				detailApart(aptCode);
+			};
+		});
+	};
+	
+	async function detailApart(aptCode){
+		let url = "/aparts/"+aptCode;
+		
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		let detailModal = new bootstrap.Modal(document.querySelector("#modalApartDetail"), {  keyboard: false } )
+		detailModal.show();
+		
+		document.querySelector("#modalApartDetailTitle").innerText = data.aptName;
+		
+		let detailHTML = `<h3>${data.sidoName} ${data.gugunName} ${data.dongName} ${data.jibun} , ${data.buildYear}년 건축</h3>`;
+		let count = 1;
+		data.houseDealList.forEach(el => {
+			detailHTML += `<div>${count++} 전용 면적 : ${el.area}m², 거래 날짜 : ${el.dealYear}-${el.dealMonth}-${el.dealDay}, <strong>거래 금액 : ${el.dealAmount}</strong></div>`
+		});
+							
+		detailHTML += `<br><br><hr><h3>가까운 지하철</h3>`;
+		data.subwayList.forEach(el => {
+			detailHTML += `<div>${el.line} ${el.station}역, 거리 : ${el.distance}km</div>`;
+		});
+		
+		console.log(data.houseDealList);
+		console.log("==================================================================")
+		console.log(data.subwayList);
+		
+		document.querySelector("#divApartInfo").innerHTML = detailHTML;
+		
+	};
+	function addPagination(){
+
+		makePaginationHtml(LIST_ROW_COUNT, PAGE_LINK_COUNT, CURRENT_PAGE_INDEX, TOTAL_LIST_ITEM_COUNT, "paginationWrapper" );
+	}
+
+	function movePage(pageIndex){
+		OFFSET = (pageIndex - 1) * LIST_ROW_COUNT;
+		CURRENT_PAGE_INDEX = pageIndex;
+		getSearchResult();
+	}
+	</script>
+</body>
+</html>

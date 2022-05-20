@@ -25,11 +25,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         
     }
 	
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(loginInterceptor)
-			.addPathPatterns("/**")
-			.excludePathPatterns("/", "/index.html", "/login.html", "/register.html", "/logout", "/index")
-			.excludePathPatterns("/login/**", "/register/**", "/notices", "/notices/**", "/css/**", "/js/**", "/img/**");
-	}
+//	@Override
+//	public void addInterceptors(InterceptorRegistry registry) {
+//		registry.addInterceptor(loginInterceptor)
+//			.addPathPatterns("/**")
+//			.excludePathPatterns("/", "/index.html", "/login.html", "/register.html", "/logout", "/index")
+//			.excludePathPatterns("/login/**", "/register/**", "/notices", "/notices/**", "/css/**", "/js/**", "/img/**");
+//	}
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mycom.happyHouse.dto.house.HouseInfoDto;
@@ -37,9 +38,10 @@ public class interestController {
 		}
 	}
 	
-	@PostMapping(value="/{userNo}/interest/aparts") 
-	private ResponseEntity<Integer> insertInterestApt(@PathVariable String userId, InterestDto dto) {
+	@PostMapping(value="/{userId}/interest/aparts") 
+	private ResponseEntity<Integer> insertInterestApt(@PathVariable String userId,@RequestBody InterestDto dto) {
 		System.out.println("call POST /" + userId + "/interest/aparts");
+		System.out.println(dto);
 		dto.setUserId(userId);
 		int result = houseService.insertInterestApart(dto);
 		
@@ -52,7 +54,7 @@ public class interestController {
 			return new ResponseEntity<Integer>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	@DeleteMapping(value="/{userNo}/interest/aparts/{aptCode}") 
+	@DeleteMapping(value="/{userId}/interest/aparts/{aptCode}") 
 	private ResponseEntity<Integer> insertInterestApt(@PathVariable String userId, @PathVariable int aptCode) {
 		System.out.println("call DELETE /" + userId + "/interest/aparts");
 		

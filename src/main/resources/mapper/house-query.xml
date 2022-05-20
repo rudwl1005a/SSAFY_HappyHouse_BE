@@ -7,8 +7,8 @@
    <select id="getSearchHouseInfo" parameterType="com.mycom.happyHouse.dto.house.HouseSearchParamDto" resultType="com.mycom.happyHouse.dto.house.HouseInfoDto">
 		select h.aptCode, h.aptName, h.buildyear, h.dongName, h.jibun, si.sidoname, gu.gugunname, h.lat, h.lng,
 		<!-- 이중쿼리 결과값이 null 일 때도 해야함 -->
-		 ifnull( (h.aptCode in 
-		         (0,(select h.aptcode FROM interest_apart i, houseinfo h WHERE i.aptCode = h.aptCode AND i.user_id = #{userId}) ) )
+		 ifnull( h.aptCode in 
+		         (select h.aptcode FROM interest_apart i, houseinfo h WHERE i.aptCode = h.aptCode AND i.user_id = #{userId} union select 0)
 		         , 0 ) as isUserInterest 
 <!-- 				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice -->
 		from houseinfo h 

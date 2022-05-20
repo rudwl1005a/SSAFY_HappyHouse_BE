@@ -1,4 +1,4 @@
-package com.mycom.happyHouse.dto;
+package com.mycom.happyHouse.dto.house;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +21,11 @@ public class HouseSearchParamDto {
 	private String gugunCode;
 	private String dongCode;
 	
+	private String userId;
+	
+	//정렬 키워드와 정렬조건
+	private String sortKey;
+	private String sortType;
 	//private String minPrice;
 	//private String maxPrice;
 	//private String minArea;

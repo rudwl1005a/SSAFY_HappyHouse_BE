@@ -3,20 +3,20 @@
 
 <mapper namespace="com.mycom.happyHouse.dao.AddressDao">
 
-    <select id="getSido" resultType="com.mycom.happyHouse.dto.SidoGugunDongDto">
+    <select id="getSido" resultType="com.mycom.happyHouse.dto.house.SidoGugunDongDto">
 		select left(sidoCode,2) sidoCode, sidoName
 		from sidocode
 		order by sidoCode
 	</select>
 	
-	<select id="getGugunInSido" parameterType="string" resultType="com.mycom.happyHouse.dto.SidoGugunDongDto">
+	<select id="getGugunInSido" parameterType="string" resultType="com.mycom.happyHouse.dto.house.SidoGugunDongDto">
 		select left(gugunCode,5) gugunCode, gugunName
 		from guguncode
 		where left(gugunCode,2) = #{sido}
 		order by gugunCode
 	</select>
 	
-	<select id="getDongInGugun" parameterType="string" resultType="com.mycom.happyHouse.dto.SidoGugunDongDto">
+	<select id="getDongInGugun" parameterType="string" resultType="com.mycom.happyHouse.dto.house.SidoGugunDongDto">
 		select dongName, dongCode
 		from dongcode
 		where left(dongCode, 5) = #{gugun}

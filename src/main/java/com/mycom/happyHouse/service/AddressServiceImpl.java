@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mycom.happyHouse.dao.AddressDao;
-import com.mycom.happyHouse.dto.SidoGugunDongDto;
+import com.mycom.happyHouse.dto.house.SidoGugunDongDto;
 
 @Service
 public class AddressServiceImpl implements AddressService{

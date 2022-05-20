@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mycom.happyHouse.dao.HouseDao;
-import com.mycom.happyHouse.dto.HouseDealDto;
-import com.mycom.happyHouse.dto.HouseInfoDto;
-import com.mycom.happyHouse.dto.HouseSearchParamDto;
-import com.mycom.happyHouse.dto.HouseSearchResultDto;
-import com.mycom.happyHouse.dto.SubwayDto;
+import com.mycom.happyHouse.dto.house.HouseDealDto;
+import com.mycom.happyHouse.dto.house.HouseInfoDto;
+import com.mycom.happyHouse.dto.house.HouseSearchParamDto;
+import com.mycom.happyHouse.dto.house.HouseSearchResultDto;
+import com.mycom.happyHouse.dto.house.InterestDto;
+import com.mycom.happyHouse.dto.house.SubwayDto;
 
 @Service
 public class HouseServiceImpl implements HouseService{
@@ -19,33 +20,59 @@ public class HouseServiceImpl implements HouseService{
 	@Autowired
 	HouseDao dao;
 	
+	//통합 검색 일반
 	@Override
 	public HouseSearchResultDto getSearchHouseInfo(HouseSearchParamDto dto) {
 		List<HouseInfoDto> list = null;
-		HouseSearchResultDto result = null;		
+		HouseSearchResultDto result = new HouseSearchResultDto();
 		try {
-			result = new HouseSearchResultDto();
-			
 			int count = dao.getCountHouseInfo(dto);
 			list = dao.getSearchHouseInfo(dto);
 			
 			result.setCount(count);
 			result.setList(list);
-						
+			result.setResult(1);
 		}catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			result.setResult(0);
+			return result;
 		}
 		return result;
 	}
-
+	
+	//관심 아파트 검색
 	@Override
-	public HouseInfoDto getHouseInfoByAptCode(int aptCode) {
+	public HouseSearchResultDto getSearchHouseInfoByInterest(HouseSearchParamDto dto) {
+		List<HouseInfoDto> list = null;
+		HouseSearchResultDto result = new HouseSearchResultDto();
+		try {
+			int count = dao.getCountHouseInfoByInterest(dto);
+			list = dao.getSearchHouseInfoByInterest(dto);
+			
+			result.setCount(count);
+			result.setList(list);
+			result.setResult(1);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.setResult(0);
+			return result;
+		}
+		return result;
+	}
+	
+	@Override
+	public HouseSearchResultDto getHouseInfoByAptCode(int aptCode) {
 		HouseInfoDto dto = null;
+		HouseSearchResultDto result = new HouseSearchResultDto();
 		try {
 			dto = dao.getHouseInfoByAptCode(aptCode);
 			
-			if(dto == null) return null;
+			if(dto == null) {
+				result.setResult(1);
+				result.setHouseInfoDto(null);
+				return result;
+			}
 			
 			dto.setHouseDealList(dao.getHouseDealList(aptCode));
 			
@@ -56,28 +83,40 @@ public class HouseServiceImpl implements HouseService{
 				subwayList.sort((a,b)-> a.getDistance().compareTo(b.getDistance()) );
 				if(subwayList.size() > 3) subwayList = subwayList.subList(0, 3);
 			}
+			
 			dto.setSubwayList(subwayList);
+			result.setHouseInfoDto(dto);
+			result.setResult(1);
+			
 		}catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			result.setResult(0);
+			return result;
 		}
 		
-		return dto;
+		return result;
 	}
 
 	@Override
-	public List<HouseDealDto> getHouseDealList(int aptCode) {
-		List<HouseDealDto> list = null; 
+	public int insertInterestApart(InterestDto dto) {
 		try {
-			list = dao.getHouseDealList(aptCode);
-		
-		}catch (Exception e) {
+			return dao.insertInterestApart(dto);
+		}catch(Exception e) {
 			e.printStackTrace();
-			return null;
+			return 0;
 		}
 		
-		return list;
 	}
+
+	@Override
+	public int deleteInterestApart(InterestDto dto) {
+		try {
+			return dao.deleteInterestApart(dto);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}	
 
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.mycom.happyHouse.dto.SidoGugunDongDto;
+import com.mycom.happyHouse.dto.house.SidoGugunDongDto;
 
 @Mapper
 public interface AddressDao {

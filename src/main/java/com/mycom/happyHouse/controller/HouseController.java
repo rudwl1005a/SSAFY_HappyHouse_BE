@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycom.happyHouse.dto.HouseInfoDto;
-import com.mycom.happyHouse.dto.HouseSearchParamDto;
-import com.mycom.happyHouse.dto.HouseSearchResultDto;
+import com.mycom.happyHouse.dto.house.HouseInfoDto;
+import com.mycom.happyHouse.dto.house.HouseSearchParamDto;
+import com.mycom.happyHouse.dto.house.HouseSearchResultDto;
 import com.mycom.happyHouse.service.HouseService;
 
 @RestController
@@ -26,7 +26,7 @@ public class HouseController {
 		System.out.println("call /aparts?" + dto);
 		HouseSearchResultDto result = houseService.getSearchHouseInfo(dto);
 		
-		if(result != null){// && !list.isEmpty()) {
+		if(result.getResult() == 1){// && !list.isEmpty()) {
 			System.out.println("result : Success" );
 			return new ResponseEntity<HouseSearchResultDto>(result, HttpStatus.OK);
 		}
@@ -39,15 +39,15 @@ public class HouseController {
 	@GetMapping(value="/{aptCode}") 
 	private ResponseEntity<HouseInfoDto> houseDetail(@PathVariable int aptCode) {
 		System.out.println("call /aparts/" + aptCode);
-		HouseInfoDto dto = houseService.getHouseInfoByAptCode(aptCode);
+		HouseSearchResultDto result = houseService.getHouseInfoByAptCode(aptCode);
 		
-		if(dto != null) {
+		if(result.getResult() == 1) {
 			System.out.println("result : Success" );
-			return new ResponseEntity<HouseInfoDto>(dto, HttpStatus.OK);
+			return new ResponseEntity<HouseInfoDto>(result.getHouseInfoDto(), HttpStatus.OK);
 		}
 		else {
 			System.out.println("result : Failed" );
-			return new ResponseEntity<HouseInfoDto>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<HouseInfoDto>(result.getHouseInfoDto(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}

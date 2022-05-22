@@ -25,7 +25,7 @@ public class HouseSearchParamDto {
 	
 	//정렬 키워드와 정렬조건
 	private String sortKey;
-	private String sortType;
+	private int sortType;
 	//private String minPrice;
 	//private String maxPrice;
 	//private String minArea;

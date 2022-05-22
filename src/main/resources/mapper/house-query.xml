@@ -6,11 +6,13 @@
 	<!-- 통합 검색 쿼리 -->
    <select id="getSearchHouseInfo" parameterType="com.mycom.happyHouse.dto.house.HouseSearchParamDto" resultType="com.mycom.happyHouse.dto.house.HouseInfoDto">
 		select h.aptCode, h.aptName, h.buildyear, h.dongName, h.jibun, si.sidoname, gu.gugunname, h.lat, h.lng,
-		<!-- 이중쿼리 결과값이 null 일 때도 해야함 -->
-		 ifnull( h.aptCode in 
-		         (select h.aptcode FROM interest_apart i, houseinfo h WHERE i.aptCode = h.aptCode AND i.user_id = #{userId} union select 0)
-		         , 0 ) as isUserInterest 
-<!-- 				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice -->
+ 				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice,
+ 				(select max(dealAmount) from housedeal where aptCode = h.aptCode) as maxPrice,
+ 				(select count(dealAmount) from housedeal where aptCode = h.aptCode) as dealCount,
+ 						<!-- 이중쿼리 결과값이 null 일 때도 해야함 -->
+				 ifnull( h.aptCode in 
+			         (select h.aptcode FROM interest_apart i, houseinfo h WHERE i.aptCode = h.aptCode AND i.user_id = #{userId} union select 0)
+			         , 0 ) as isUserInterest  
 		from houseinfo h 
 		left join sidocode si
 		on left(h.dongcode,2) = left(si.sidocode,2)
@@ -29,14 +31,34 @@
 		<if test="dongCode != null and dongCode != ''"> 
 		AND dongCode = #{dongCode} 
 		</if>
-		<!-- 정렬기준 정하면 작성하기
+		
 		ORDER BY 
-		if 무슨 순
-		else if 무슨 순
-		else if 무슨 순
-		else
-		aptCode
-		 -->
+		<choose>
+			<when test="sortType == 1">
+			dealCount desc
+			</when>
+			
+			<when test="sortType == 2">
+			h.buildYear desc
+			</when>
+			
+			<when test="sortType == 3">
+			maxPrice desc
+			</when>
+			
+			<when test="sortType == 4">
+			recentPrice desc
+			</when>
+			
+			<when test="sortType == 5">
+			h.aptName
+			</when>
+			
+			<otherwise>
+			h.aptCode
+			</otherwise>
+		</choose>
+		
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
@@ -61,8 +83,11 @@
 	
 	<!-- 관심아파트 검색 쿼리 -->
 	<select id="getSearchHouseInfoByInterest" parameterType="com.mycom.happyHouse.dto.house.HouseSearchParamDto" resultType="com.mycom.happyHouse.dto.house.HouseInfoDto">
-		select h.aptCode, h.aptName, h.buildyear, h.dongName, h.jibun, si.sidoname, gu.gugunname, h.lat, h.lng, 1 as isUserInterest
-<!-- 				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice -->
+		select h.aptCode, h.aptName, h.buildyear, h.dongName, h.jibun, si.sidoname, gu.gugunname, h.lat, h.lng, 
+				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice ,
+				(select max(dealAmount) from housedeal where aptCode = h.aptCode) as maxPrice,
+ 				(select count(dealAmount) from housedeal where aptCode = h.aptCode) as dealCount,
+				1 as isUserInterest
 		from houseinfo h 
 		left join interest_apart i
 		on h.aptCode = i.aptCode
@@ -83,14 +108,35 @@
 		<if test="dongCode != null and dongCode != ''"> 
 		AND dongCode = #{dongCode} 
 		</if>
-		<!-- 
+		
 		ORDER BY 
-		if 무슨 순
-		else if 무슨 순
-		else if 무슨 순
-		else
-		aptCode
-		 -->
+		<choose>
+			<when test="sortType == 1">
+			dealCount desc
+			</when>
+			
+			<when test="sortType == 2">
+			h.buildYear desc
+			</when>
+			
+			<when test="sortType == 3">
+			maxPrice desc
+			</when>
+			
+			<when test="sortType == 4">
+			recentPrice desc
+			</when>
+			
+			<when test="sortType == 5">
+			h.aptName
+			</when>
+			
+			<otherwise>
+			h.aptCode
+			</otherwise>
+		</choose>
+		
+
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
 	

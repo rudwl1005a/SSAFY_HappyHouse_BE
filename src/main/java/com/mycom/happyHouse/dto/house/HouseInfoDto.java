@@ -29,6 +29,8 @@ public class HouseInfoDto {
 	
 	//최근 거래가
 	private String recentPrice;
+	private String maxPrice;
+	private int dealCount;
 	//유저가 관심 아파트로 지정했는지
 	private int isUserInterest;
 	

@@ -1,9 +1,16 @@
 package com.mycom.happyHouse.dao;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-import com.mycom.happyHouse.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface UserDao extends JpaRepository<User, Integer> {
-	User findByUserId(String userId);
+import com.mycom.happyHouse.dto.UserDto;
+
+@Mapper
+public interface UserDao {
+	List<UserDto> list();
+	UserDto detail(String userId);
+	int insert(UserDto user);
+	int update(UserDto user);
+	int delete(String userId);
 }

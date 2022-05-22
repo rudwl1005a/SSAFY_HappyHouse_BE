@@ -23,18 +23,18 @@ public class interestController {
 	HouseService houseService;
 	
 	@GetMapping(value="/{userId}/interest/aparts") 
-	private ResponseEntity<HouseInfoDto> houseList(@PathVariable String userId, HouseSearchParamDto dto) {
-		System.out.println("call Get /" + userId + "/interest/aparts");
+	private ResponseEntity<HouseSearchResultDto> houseList(@PathVariable String userId, HouseSearchParamDto dto) {
+		System.out.println("call Get /" + userId + "/interest/aparts" + dto);
 		dto.setUserId(userId);
 		HouseSearchResultDto result = houseService.getSearchHouseInfoByInterest(dto);
-		
+		System.out.println(result.getCount());
 		if(result.getResult() == 1) {
 			System.out.println("result : Success" );
-			return new ResponseEntity<HouseInfoDto>(result.getHouseInfoDto(), HttpStatus.OK);
+			return new ResponseEntity<HouseSearchResultDto>(result, HttpStatus.OK);
 		}
 		else {
 			System.out.println("result : Failed" );
-			return new ResponseEntity<HouseInfoDto>(result.getHouseInfoDto(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<HouseSearchResultDto>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	

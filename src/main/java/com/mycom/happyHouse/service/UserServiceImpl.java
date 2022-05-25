@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mycom.happyHouse.dao.UserDao;
-import com.mycom.happyHouse.entity.User;
+import com.mycom.happyHouse.dto.UserDto;
 
 @Service
 @Transactional
@@ -18,34 +18,29 @@ public class UserServiceImpl implements UserService {
 	UserDao dao;
 
 	@Override
-	public List<User> list() {
-		return dao.findAll();
+	public List<UserDto> list() {
+		return dao.list();
 	}
 
 	@Override
-	public User detail(String userId) {
-		return dao.findByUserId(userId);
+	public UserDto detail(String userId) {
+		return dao.detail(userId);
 	}
 
 	@Override
-	public User insert(User user) {
-		return dao.save(user);
+	public int insert(UserDto user) {
+		return dao.insert(user);
 	}
 
 	@Override
-	public User update(String userId, User user) {
-		User findUser = dao.findByUserId(userId);
-		findUser.setUserId(user.getUserId());
-		findUser.setPassword(user.getPassword());
-		findUser.setName(user.getName());
-		return dao.save(findUser);
+	public int update( UserDto user) {
+		return dao.update(user);
 	}
 
 	@Override
-	public void delete(String userId) {
-		User user = dao.findByUserId(userId);
-		int userNo = user.getUserNo();
-		dao.deleteById(userNo);
+	public int delete(String userId) {
+		// 대댓글 삭제 -> 댓글 삭제 -> 게시글 삭제 -> 회원 탈퇴
+		return dao.delete(userId);
 	}
 
 }

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.mycom.happyHouse.entity.User;
+import com.mycom.happyHouse.dto.UserDto;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor { // HandlerInterceptorAdapter 는 deprecated
@@ -15,7 +15,7 @@ public class LoginInterceptor implements HandlerInterceptor { // HandlerIntercep
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
+		UserDto user = (UserDto) session.getAttribute("user");
 		if (user == null) {
 			response.sendRedirect("/login");
 			return false;

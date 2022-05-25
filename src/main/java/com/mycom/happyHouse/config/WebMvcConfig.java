@@ -11,10 +11,10 @@ import com.mycom.happyHouse.common.LoginInterceptor;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-	
+
 	@Autowired
 	private LoginInterceptor loginInterceptor;
-	
+
 	@Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*")
@@ -32,4 +32,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //			.excludePathPatterns("/", "/index.html", "/login.html", "/register.html", "/logout", "/index")
 //			.excludePathPatterns("/login/**", "/register/**", "/notices", "/notices/**", "/css/**", "/js/**", "/img/**");
 //	}
+  
 }

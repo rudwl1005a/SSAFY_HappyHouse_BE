@@ -2,12 +2,12 @@ package com.mycom.happyHouse.service;
 
 import java.util.List;
 
-import com.mycom.happyHouse.entity.User;
+import com.mycom.happyHouse.dto.UserDto;
 
 public interface UserService {
-	List<User> list();
-	User detail(String userId);
-	User insert(User user);
-	User update(String userId, User user);
-	void delete(String userId);
+	List<UserDto> list();
+	UserDto detail(String userId);
+	int insert(UserDto user);
+	int update(UserDto user);
+	int delete(String userId);
 }

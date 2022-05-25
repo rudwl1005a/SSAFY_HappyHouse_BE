@@ -1,4 +1,4 @@
-package com.mycom.happyHouse.service;
+package com.mycom.happyHouse.service.user;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mycom.happyHouse.dao.UserDao;
-import com.mycom.happyHouse.dto.UserDto;
+import com.mycom.happyHouse.dao.user.UserDao;
+import com.mycom.happyHouse.dto.user.UserDto;
 
 @Service
 @Transactional

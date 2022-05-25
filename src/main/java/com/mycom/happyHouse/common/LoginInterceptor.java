@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.mycom.happyHouse.dto.UserDto;
+import com.mycom.happyHouse.dto.user.UserDto;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor { // HandlerInterceptorAdapter 는 deprecated

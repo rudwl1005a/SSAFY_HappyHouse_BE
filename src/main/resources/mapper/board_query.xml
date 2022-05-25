@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.mycom.happyHouse.dao.board.BoardDao">
+
+	<insert id="boardInsert" parameterType="com.mycom.happyHouse.dto.board.BoardDto" useGeneratedKeys="true" keyProperty="boardId">
+		INSERT INTO BOARD ( user_id, board_code, title, content, reg_dt, read_count )
+		            VALUES ( #{userId}, #{boardCode}, #{title}, #{content}, now(), 0 )
+	</insert>
+	
+	<!-- Dao use Dto -->
+	<select id="boardUserReadCount" parameterType="map" resultType="int">
+		SELECT count(*) FROM board_user_read WHERE board_id = #{boardId} and user_id = #{userId}
+	</select>
+	
+	<!-- Dao use @param -->
+	<insert id="boardUserReadInsert" parameterType="map">
+		INSERT INTO board_user_read ( board_id, user_id )
+		            VALUES ( #{boardId}, #{userId} )
+	</insert>
+	
+	<update id="boardReadCountUpdate" parameterType="int">
+		UPDATE board set READ_COUNT = READ_COUNT + 1
+		 WHERE BOARD_ID = #{boardId}
+	</update>
+	
+	<select id="boardDetail" parameterType="int" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT user_id, board_code, board_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE board_id = #{boardId}
+	</select>
+
+	<update id="boardUpdate" parameterType="com.mycom.happyHouse.dto.board.BoardDto">
+		UPDATE board
+		   SET tile = #{title}, content = #{content}
+		 WHERE board_id = #{boardId}
+	</update>
+	
+	<delete id="boardDelete" parameterType="int">
+		DELETE FROM board WHERE board_id = #{boardId}
+	</delete>
+	
+	<delete id="boardReadCountDelete" parameterType="int">
+		DELETE FROM board_user_read WHERE board_id = #{boardId}
+	</delete>
+	
+	
+	<!-- reg_dt : LocalDateTime, check out BoardDto setter  -->
+	<select id="freeBoardList" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE board_code = '001'
+		 ORDER BY board_id DESC
+		 LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<select id="QnABoardList" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE board_code = '002'
+		 ORDER BY board_id DESC
+		 LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<select id="noticeBoardList" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE board_code = '003'
+		 ORDER BY board_id DESC
+		 LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	
+	<select id="freeBoardListTotalCount" resultType="int">
+		SELECT COUNT(*) FROM BOARD
+		 WHERE board_code = '001'
+	</select>
+	<select id="QnABoardListTotalCount" resultType="int">
+		SELECT COUNT(*) FROM BOARD
+		 WHERE board_code = '002'
+	</select>
+	<select id="noticeBoardListTotalCount" resultType="int">
+		SELECT COUNT(*) FROM BOARD
+		 WHERE board_code = '003'
+	</select>
+
+	
+	<select id="freeBoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT user_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE board_code = '001'
+		   AND title LIKE CONCAT('%', #{searchWord} ,'%')
+		 ORDER BY board_id DESC
+		 LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<select id="QnAoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT user_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE board_code = '002'
+		   AND title LIKE CONCAT('%', #{searchWord} ,'%')
+		 ORDER BY board_id DESC
+		 LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<select id="noticeBoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT user_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE board_code = '003'
+		   AND title LIKE CONCAT('%', #{searchWord} ,'%')
+		 ORDER BY board_id DESC
+		 LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	
+	<select id="freeBoardListSearchWordTotalCount" parameterType="string" resultType="int">
+		SELECT COUNT(*)
+		  FROM board
+		 WHERE title LIKE CONCAT('%', #{searchWord} ,'%') AND board_code = '001'
+	</select>
+	
+	<select id="QnABoardListSearchWordTotalCount" parameterType="string" resultType="int">
+		SELECT COUNT(*)
+		  FROM board
+		 WHERE title LIKE CONCAT('%', #{searchWord} ,'%') AND board_code = '002'
+	</select>
+	
+	<select id="noticeListSearchWordTotalCount" parameterType="string" resultType="int">
+		SELECT COUNT(*)
+		  FROM board
+		 WHERE title LIKE CONCAT('%', #{searchWord} ,'%') AND board_code = '003'
+	</select>
+	
+</mapper>

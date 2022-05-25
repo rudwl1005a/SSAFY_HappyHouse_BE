@@ -3,12 +3,12 @@
 <mapper namespace="com.mycom.happyHouse.dao.user.UserDao">
 
 	<select id="list" resultType="com.mycom.happyHouse.dto.user.UserDto">
-		SELECT user_no, user_code, name, password, user_id
+		SELECT user_no, user_code, name, password, user_id, introduce, email, gender, phone
 		FROM user
 	</select>
 	
 	<select id="detail" parameterType="string" resultType="com.mycom.happyHouse.dto.user.UserDto">
-		SELECT user_no, user_code, name, password, user_id
+		SELECT user_no, user_code, name, password, user_id, introduce, email, gender, phone
 		FROM user
 		WHERE user_id = #{user_id}
 	</select>
@@ -20,7 +20,7 @@
 	
 	<update id="update" parameterType="com.mycom.happyHouse.dto.user.UserDto">
 		UPDATE user
-		SET name = #{name}, password = #{password}
+		SET name = #{name}, password = #{password}, introduce = #{introduce}, email = #{email}, gender = #{gender}, phone = #{phone}
 		WHERE user_id = #{userId}
 	</update>
 	

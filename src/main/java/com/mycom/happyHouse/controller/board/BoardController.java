@@ -1,7 +1,8 @@
 package com.mycom.happyHouse.controller.board;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,20 +11,24 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mycom.happyHouse.dto.board.BoardDto;
 import com.mycom.happyHouse.dto.board.BoardParamDto;
 import com.mycom.happyHouse.dto.board.BoardResultDto;
-import com.mycom.happyHouse.dto.user.UserDto;
 import com.mycom.happyHouse.service.board.BoardService;
+import com.mycom.happyHouse.service.user.JwtService;
 
 @RestController
 public class BoardController {
 
 	@Autowired
 	BoardService service;
+	@Autowired
+	JwtService jwtService;
 
 	private static final int SUCCESS = 1;
 
@@ -80,18 +85,17 @@ public class BoardController {
 			return new ResponseEntity<BoardResultDto>(boardResultDto, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
 
 	@GetMapping(value = "/boards/{boardId}")
-	private ResponseEntity<BoardResultDto> boardDetail(@PathVariable int boardId, HttpSession session) {
+	private ResponseEntity<BoardResultDto> boardDetail(@PathVariable int boardId, @RequestHeader Map<String, Object> requestHeader) {
 
 		BoardParamDto boardParamDto = new BoardParamDto();
 		boardParamDto.setBoardId(boardId);
-//		boardParamDto.setUserId(((UserDto) session.getAttribute("userDto")).getUserId());
-		boardParamDto.setUserId("123");
-		System.out.println(boardParamDto);
-
+		String userId = jwtService.getSubject((String)requestHeader.get("authorization"));
+		boardParamDto.setUserId(userId);
+		
 		BoardResultDto boardResultDto = service.boardDetail(boardParamDto);
-		System.out.println(boardResultDto);
 
 		if (boardResultDto.getResult() == SUCCESS) {
 			return new ResponseEntity<BoardResultDto>(boardResultDto, HttpStatus.OK);
@@ -104,12 +108,6 @@ public class BoardController {
 	private ResponseEntity<BoardResultDto> boardInsert(@RequestBody BoardDto boardDto, HttpServletRequest request) {
 
 		System.out.println(boardDto);
-		
-		// LoginFilter 먼저 적용 필요!!
-//		HttpSession session = request.getSession();
-//		UserDto userDto = (UserDto) session.getAttribute("userDto");
-//
-//		boardDto.setUserId(userDto.getUserId());
 
 		BoardResultDto boardResultDto = service.boardInsert(boardDto);
 
@@ -120,13 +118,12 @@ public class BoardController {
 		}
 	}
 
-	@PostMapping(value = "/boards/{boardId}")
-	private ResponseEntity<BoardResultDto> boardUpdate(BoardDto boardDto, HttpServletRequest request) {
+	@PutMapping(value = "/boards/{boardId}")
+	private ResponseEntity<BoardResultDto> boardUpdate(@RequestBody BoardDto boardDto, @RequestHeader Map<String, Object> requestHeader) {
 
-		HttpSession session = request.getSession();
-		UserDto userDto = (UserDto) session.getAttribute("userDto");
+		String userId = jwtService.getSubject((String)requestHeader.get("authorization"));
 
-		boardDto.setUserId(userDto.getUserId());
+		boardDto.setUserId(userId);
 
 		BoardResultDto boardResultDto = service.boardUpdate(boardDto);
 

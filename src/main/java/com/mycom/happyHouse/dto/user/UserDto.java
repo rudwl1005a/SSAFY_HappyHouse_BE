@@ -18,5 +18,8 @@ public class UserDto {
 	private String password;
 	private String userId;
 	
-	private String token;
+	private String introduce;
+	private String email;
+	private String gender;
+	private String phone;
 }

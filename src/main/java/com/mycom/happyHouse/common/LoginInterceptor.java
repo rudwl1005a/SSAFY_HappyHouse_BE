@@ -2,24 +2,50 @@ package com.mycom.happyHouse.common;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.mycom.happyHouse.dto.user.UserDto;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.mycom.happyHouse.exception.UnauthorizedException;
+import com.mycom.happyHouse.service.user.JwtService;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor { // HandlerInterceptorAdapter 는 deprecated
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	private static final String HEADER_AUTH = "authorization";
 
-		HttpSession session = request.getSession();
-		UserDto user = (UserDto) session.getAttribute("user");
-		if (user == null) {
-			response.sendRedirect("/login");
-			return false;
+	@Autowired
+	private JwtService jwtService;
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+
+		System.out.println(">>>>>> " + request.getRequestURI());
+
+		// cors put, delete 대응
+		if (request.getMethod().equals("OPTIONS")) {
+			return true;
 		}
-		return true;
+
+		final String token = request.getHeader(HEADER_AUTH);
+		System.out.println(token);
+		
+		if (token != null && !token.equals("") && jwtService.isUsable(token)) {
+			return true;
+		} else {
+			Gson gson = new Gson();
+
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("result", "login");
+			
+			String jsonStr = gson.toJson(jsonObject);
+			response.getWriter().write(jsonStr);
+			
+			throw new UnauthorizedException();
+		}
+
 	}
 }

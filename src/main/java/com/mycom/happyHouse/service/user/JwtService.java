@@ -8,13 +8,15 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.stereotype.Service;
 
+import com.mycom.happyHouse.exception.UnauthorizedException;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
-public class SecurityService {
-	private static final String SECRET_KEY = "asdfasfdasdfasafsdfweffasafsdfweffasafsdfweffasafsdfwefwfasddf"; // 임시
+public class JwtService {
+	private static final String SECRET_KEY = "adfskjashdflasjflhgqjkhkjhvqjhfvqkjhfvkqjhvfkjasdfhkajsdhfhqv";
 	
 	// 로그인 서비스 던질 때 같이
 	// header.payload(claim).signature
@@ -45,4 +47,16 @@ public class SecurityService {
 		
 		return claims.getSubject();
 	}
+	
+    public boolean isUsable(String jwt) {
+        try{
+            Claims claims = Jwts.parser()
+                    .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
+                    .parseClaimsJws(jwt).getBody();
+            return true;
+
+        }catch (Exception e) {
+            throw new UnauthorizedException();
+        }
+    }
 }

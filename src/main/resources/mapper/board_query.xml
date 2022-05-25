@@ -31,7 +31,7 @@
 
 	<update id="boardUpdate" parameterType="com.mycom.happyHouse.dto.board.BoardDto">
 		UPDATE board
-		   SET tile = #{title}, content = #{content}
+		   SET title = #{title}, content = #{content}
 		 WHERE board_id = #{boardId}
 	</update>
 	
@@ -85,7 +85,7 @@
 
 	
 	<select id="freeBoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
-		SELECT user_id, title, content, reg_dt, read_count
+		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
 		  FROM board
 		 WHERE board_code = '001'
 		   AND title LIKE CONCAT('%', #{searchWord} ,'%')
@@ -93,8 +93,8 @@
 		 LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
-	<select id="QnAoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
-		SELECT user_id, title, content, reg_dt, read_count
+	<select id="QnABoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
 		  FROM board
 		 WHERE board_code = '002'
 		   AND title LIKE CONCAT('%', #{searchWord} ,'%')
@@ -103,7 +103,7 @@
 	</select>
 	
 	<select id="noticeBoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
-		SELECT user_id, title, content, reg_dt, read_count
+		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
 		  FROM board
 		 WHERE board_code = '003'
 		   AND title LIKE CONCAT('%', #{searchWord} ,'%')
@@ -124,7 +124,7 @@
 		 WHERE title LIKE CONCAT('%', #{searchWord} ,'%') AND board_code = '002'
 	</select>
 	
-	<select id="noticeListSearchWordTotalCount" parameterType="string" resultType="int">
+	<select id="noticeBoardListSearchWordTotalCount" parameterType="string" resultType="int">
 		SELECT COUNT(*)
 		  FROM board
 		 WHERE title LIKE CONCAT('%', #{searchWord} ,'%') AND board_code = '003'

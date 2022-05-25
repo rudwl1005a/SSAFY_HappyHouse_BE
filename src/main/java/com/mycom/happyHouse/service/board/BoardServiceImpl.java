@@ -47,6 +47,8 @@ public class BoardServiceImpl implements BoardService {
 	public BoardResultDto boardUpdate(BoardDto dto) {
 
 		BoardResultDto boardResultDto = new BoardResultDto();
+		
+		System.out.println("BoardUpdate : " + dto);
 
 		try {
 			dao.boardUpdate(dto);
@@ -64,6 +66,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public BoardResultDto boardDelete(int boardId) {
+		// 대댓글 삭제 -> 댓글 삭제 -> 게시글 조회수 삭제 -> 게시글 삭제
 
 		BoardResultDto boardResultDto = new BoardResultDto();
 
@@ -84,6 +87,8 @@ public class BoardServiceImpl implements BoardService {
 	public BoardResultDto boardDetail(BoardParamDto boardParamDto) {
 
 		BoardResultDto boardResultDto = new BoardResultDto();
+		
+		System.out.println("board Detail : " + boardParamDto);
 
 		try {
 			int userReadCnt = dao.boardUserReadCount(boardParamDto);
@@ -98,8 +103,6 @@ public class BoardServiceImpl implements BoardService {
 			} else {
 				boardDto.setSameUser(false);
 			}
-			
-			
 			
 			boardResultDto.setDto(boardDto);
 			boardResultDto.setResult(SUCCESS);

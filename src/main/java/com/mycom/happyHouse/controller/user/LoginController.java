@@ -3,6 +3,7 @@ package com.mycom.happyHouse.controller.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mycom.happyHouse.dto.user.UserDto;
-import com.mycom.happyHouse.service.user.SecurityService;
+import com.mycom.happyHouse.service.user.JwtService;
 import com.mycom.happyHouse.service.user.UserService;
 
 @RestController
@@ -21,11 +22,11 @@ public class LoginController {
 
 	@Autowired
 	UserService service;
-//	@Autowired
-//	private SecurityService securityService;
+	@Autowired
+	private JwtService jwtService;
 
 	@PostMapping(value = "/login")
-	public ResponseEntity<Map<String, String>> login(@RequestBody UserDto loginUser, HttpSession session) {
+	public ResponseEntity<Map<String, String>> login(@RequestBody UserDto loginUser, HttpServletResponse response) {
 		
 		System.out.println("loginUser : " + loginUser);
 
@@ -35,20 +36,37 @@ public class LoginController {
 		
 		Map<String, String> map = new HashMap<>();
 		if (user.getPassword().equals(loginUser.getPassword())) {
-			session.setAttribute("user", user);
-
+			
 			map.put("result", "success");
 			map.put("userId", user.getUserId());
 			map.put("password", user.getPassword());
 			map.put("name", user.getName());
 			map.put("userCode", user.getUserCode());
-//			String token = securityService.createToken(user.getUserId(), (1000 * 3600 *24)); // 1일
-//			map.put("token", token);
+			map.put("introduce", user.getIntroduce());
+			map.put("email", user.getEmail());
+			map.put("gender", user.getGender());
+			map.put("phone", user.getPhone());
+			
+			String token = jwtService.createToken(user.getUserId(), (1000 * 60 * 60)); // 1시간
+			map.put("token", token);
+			System.out.println("token : " + token);
+			
+			response.setHeader("authorization", token);
 
 			return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
 		}
 		map.put("result", "fail");
 		return new ResponseEntity<Map<String, String>>(map, HttpStatus.NOT_FOUND);
+	}
+	
+	@PostMapping(value = "/logout")
+	public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
+		
+		response.setHeader("authorization", "");
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("result", "success");
+		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
 	}
 
 }

@@ -2,7 +2,7 @@ package com.mycom.happyHouse.service;
 
 import java.util.List;
 
-import com.mycom.happyHouse.dto.SidoGugunDongDto;
+import com.mycom.happyHouse.dto.house.SidoGugunDongDto;
 
 public interface AddressService {
 	public List<SidoGugunDongDto> getSido();

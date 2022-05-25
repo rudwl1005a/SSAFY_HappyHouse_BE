@@ -15,13 +15,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Autowired
 	private LoginInterceptor loginInterceptor;
 
-//	@Override
-//	public void addInterceptors(InterceptorRegistry registry) {
-//		registry.addInterceptor(loginInterceptor).addPathPatterns("/**")
-//				.excludePathPatterns("/", "/logout", "/index", "/login/**", "/register/**")
-//				.excludePathPatterns("/css/**", "/js/**", "/img/**");
-//	}
-
 	@Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*")
@@ -29,5 +22,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
         	RequestMethod.GET.name(),RequestMethod.POST.name(), RequestMethod.HEAD.name(),
         	RequestMethod.PUT.name(),RequestMethod.DELETE.name(), RequestMethod.OPTIONS.name()
         );
-	}
+        
+    }
+	
+//	@Override
+//	public void addInterceptors(InterceptorRegistry registry) {
+//		registry.addInterceptor(loginInterceptor)
+//			.addPathPatterns("/**")
+//			.excludePathPatterns("/", "/index.html", "/login.html", "/register.html", "/logout", "/index")
+//			.excludePathPatterns("/login/**", "/register/**", "/notices", "/notices/**", "/css/**", "/js/**", "/img/**");
+//	}
+  
 }

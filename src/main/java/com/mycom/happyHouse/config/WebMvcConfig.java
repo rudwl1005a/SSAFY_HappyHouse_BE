@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.mycom.happyHouse.common.LoginInterceptor;
@@ -17,9 +18,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //	@Override
 //	public void addInterceptors(InterceptorRegistry registry) {
 //		registry.addInterceptor(loginInterceptor).addPathPatterns("/**")
-//				.excludePathPatterns("/", "/index.html", "/login.html", "/register.html", "/logout", "/index")
-//				.excludePathPatterns("/login/**", "/register/**", "/notices", "/notices/**", "/css/**", "/js/**",
-//						"/img/**");
+//				.excludePathPatterns("/", "/logout", "/index", "/login/**", "/register/**")
+//				.excludePathPatterns("/css/**", "/js/**", "/img/**");
 //	}
 
 	@Override

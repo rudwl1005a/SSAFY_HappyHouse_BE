@@ -30,7 +30,7 @@ public interface HouseDao {
 	List<HouseDealDto> getHouseDealList(int aptCode);
 	
 	//주변 지하철 검색
-	List<SubwayDto> getSubwayList(int aptCode);
+	List<SubwayDto> getSubwayList(ShopSearchParamDto dto);
 	
 	//관심 아파트 삽입 및 삭제
 	int insertInterestApart(InterestDto dto);

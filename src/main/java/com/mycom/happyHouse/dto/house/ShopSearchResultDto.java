@@ -18,4 +18,5 @@ import lombok.ToString;
 public class ShopSearchResultDto {
 	int result;
 	List<ShopInfoDto> list;
+	List<SubwayDto> subList;
 }

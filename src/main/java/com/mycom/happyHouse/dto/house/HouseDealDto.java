@@ -1,4 +1,4 @@
-package com.mycom.happyHouse.dto;
+package com.mycom.happyHouse.dto.house;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

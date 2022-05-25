@@ -1,4 +1,4 @@
-package com.mycom.happyHouse.dto;
+package com.mycom.happyHouse.dto.house;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class HouseSearchResultDto {	
-	List<HouseInfoDto> list;	
-	int count;
+public class ShopSearchResultDto {
+	int result;
+	List<ShopInfoDto> list;
 }

@@ -4,9 +4,15 @@
 <mapper namespace="com.mycom.happyHouse.dao.HouseDao">
 
 	<!-- 통합 검색 쿼리 -->
-   <select id="getSearchHouseInfo" parameterType="com.mycom.happyHouse.dto.HouseSearchParamDto" resultType="com.mycom.happyHouse.dto.HouseInfoDto">
+   <select id="getSearchHouseInfo" parameterType="com.mycom.happyHouse.dto.house.HouseSearchParamDto" resultType="com.mycom.happyHouse.dto.house.HouseInfoDto">
 		select h.aptCode, h.aptName, h.buildyear, h.dongName, h.jibun, si.sidoname, gu.gugunname, h.lat, h.lng,
-				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice
+ 				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice,
+ 				(select max(dealAmount) from housedeal where aptCode = h.aptCode) as maxPrice,
+ 				(select count(dealAmount) from housedeal where aptCode = h.aptCode) as dealCount,
+ 						<!-- 이중쿼리 결과값이 null 일 때도 해야함 -->
+				 ifnull( h.aptCode in 
+			         (select h.aptcode FROM interest_apart i, houseinfo h WHERE i.aptCode = h.aptCode AND i.user_id = #{userId} union select 0)
+			         , 0 ) as isUserInterest  
 		from houseinfo h 
 		left join sidocode si
 		on left(h.dongcode,2) = left(si.sidocode,2)
@@ -25,10 +31,39 @@
 		<if test="dongCode != null and dongCode != ''"> 
 		AND dongCode = #{dongCode} 
 		</if>
+		
+		ORDER BY 
+		<choose>
+			<when test="sortType == 1">
+			dealCount desc
+			</when>
+			
+			<when test="sortType == 2">
+			h.buildYear desc
+			</when>
+			
+			<when test="sortType == 3">
+			maxPrice desc
+			</when>
+			
+			<when test="sortType == 4">
+			recentPrice desc
+			</when>
+			
+			<when test="sortType == 5">
+			h.aptName
+			</when>
+			
+			<otherwise>
+			h.aptCode
+			</otherwise>
+		</choose>
+		
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
-	<select id="getCountHouseInfo" parameterType="com.mycom.happyHouse.dto.HouseSearchParamDto" resultType="int">
+	<!-- 검색 결과 개수 쿼리 -->
+	<select id="getCountHouseInfo" parameterType="com.mycom.happyHouse.dto.house.HouseSearchParamDto" resultType="int">
 		select count(aptCode) 
 		from houseinfo 
 		where 1 = 1 
@@ -46,8 +81,89 @@
 		</if>
 	</select>
 	
+	<!-- 관심아파트 검색 쿼리 -->
+	<select id="getSearchHouseInfoByInterest" parameterType="com.mycom.happyHouse.dto.house.HouseSearchParamDto" resultType="com.mycom.happyHouse.dto.house.HouseInfoDto">
+		select h.aptCode, h.aptName, h.buildyear, h.dongName, h.jibun, si.sidoname, gu.gugunname, h.lat, h.lng, 
+				(select dealAmount from housedeal where aptCode = h.aptCode and no = (select max(no) from housedeal where aptCode = h.aptCode)) recentPrice ,
+				(select max(dealAmount) from housedeal where aptCode = h.aptCode) as maxPrice,
+ 				(select count(dealAmount) from housedeal where aptCode = h.aptCode) as dealCount,
+				1 as isUserInterest
+		from houseinfo h 
+		left join interest_apart i
+		on h.aptCode = i.aptCode
+		left join sidocode si
+		on left(h.dongcode,2) = left(si.sidocode,2)
+		left join guguncode gu
+		on left(h.dongcode,5) = left(gu.guguncode,5)
+		where i.user_id = #{userId}
+		<if test="aptKeyword != null and aptKeyword != ''"> 
+		AND aptName LIKE CONCAT('%', #{aptKeyword}, '%')  
+		</if> 
+		<if test="sidoCode != null and sidoCode != ''"> 
+		AND left(dongCode,2) = #{sidoCode} 
+		</if>
+		<if test="gugunCode != null and gugunCode != ''"> 
+		AND left(dongCode, 5) = #{gugunCode} 
+		</if>
+		<if test="dongCode != null and dongCode != ''"> 
+		AND dongCode = #{dongCode} 
+		</if>
+		
+		ORDER BY 
+		<choose>
+			<when test="sortType == 1">
+			dealCount desc
+			</when>
+			
+			<when test="sortType == 2">
+			h.buildYear desc
+			</when>
+			
+			<when test="sortType == 3">
+			maxPrice desc
+			</when>
+			
+			<when test="sortType == 4">
+			recentPrice desc
+			</when>
+			
+			<when test="sortType == 5">
+			h.aptName
+			</when>
+			
+			<otherwise>
+			h.aptCode
+			</otherwise>
+		</choose>
+		
+
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<!-- 관심아파트 검색 결과 개수 쿼리 -->
+	<select id="getCountHouseInfoByInterest" parameterType="com.mycom.happyHouse.dto.house.HouseSearchParamDto" resultType="int">
+		select count(h.aptCode) 
+		from houseinfo  h
+		left join interest_apart i
+		on h.aptCode = i.aptCode
+		where i.user_id = #{userId} 
+		<if test="aptKeyword != null and aptKeyword != ''"> 
+		AND aptName LIKE CONCAT('%', #{aptKeyword}, '%')  
+		</if> 
+		<if test="sidoCode != null and sidoCode != ''"> 
+		AND left(dongCode,2) = #{sidoCode} 
+		</if>
+		<if test="gugunCode != null and gugunCode != ''"> 
+		AND left(dongCode, 5) = #{gugunCode} 
+		</if>
+		<if test="dongCode != null and dongCode != ''"> 
+		AND dongCode = #{dongCode} 
+		</if>
+	</select>
+	
+	
 	<!-- 상세 검색 쿼리 -->
-	<select id="getHouseInfoByAptCode" parameterType="int" resultType="com.mycom.happyHouse.dto.HouseInfoDto">
+	<select id="getHouseInfoByAptCode" parameterType="int" resultType="com.mycom.happyHouse.dto.house.HouseInfoDto">
 		select h.aptCode, h.aptName, h.buildyear, h.dongCode, h.dongName, h.jibun, h.lat, h.lng, si.sidoname, gu.gugunname
 		from houseinfo h 
 		left join sidocode si
@@ -58,14 +174,14 @@
 	</select>
 
 	<!-- 아파트 거래내역 쿼리 -->
-   <select id="getHouseDealList" parameterType="int" resultType="com.mycom.happyHouse.dto.HouseDealDto">
+   <select id="getHouseDealList" parameterType="int" resultType="com.mycom.happyHouse.dto.house.HouseDealDto">
 		select no, aptCode, dealAmount, dealYear, dealMonth, dealDay, area, floor, type, rentMoney
 		from housedeal
 		where aptCode = #{aptCode}
 	</select>
 
 	<!-- 지하철 후보군 검색 쿼리 -->
-	<select id="getSubwayList" parameterType="int" resultType="com.mycom.happyHouse.dto.SubwayDto">
+	<select id="getSubwayList" parameterType="int" resultType="com.mycom.happyHouse.dto.house.SubwayDto">
 	   <![CDATA[
 		SELECT subway_id, line, station, sub.lat, sub.lng,
 		LEFT((6371*acos(cos(radians( apt.lat ))*cos(radians( sub.lat) )*cos( radians( sub.lng )
@@ -77,5 +193,28 @@
 		]]>
 	</select>
 	
+	<!-- 관심아파트 등록 -->
+	<insert id="insertInterestApart" parameterType="com.mycom.happyHouse.dto.house.InterestDto">
+		INSERT INTO interest_apart (user_id, aptCode) 
+		VALUES( #{userId}, #{aptCode} )
+	</insert>
+	
+	<delete id="deleteInterestApart" parameterType="com.mycom.happyHouse.dto.house.InterestDto">
+		DELETE FROM interest_apart 
+		WHERE user_id = #{userId} and aptCode = #{aptCode}
+	</delete>
+	
+	<!-- 주변 상권 검색 -->
+	<select id="getShopList" parameterType="com.mycom.happyHouse.dto.house.ShopSearchParamDto"  resultType="com.mycom.happyHouse.dto.house.ShopInfoDto" >
+	   <![CDATA[
+		SELECT shop_code, name, branch_name, commercial_code, commercial_name, classification, dongcode, 
+			   jibun1, jibun2, building, building_dong, floor, ho, lat, lng
+		  FROM shop s
+		 WHERE commercial_name = #{category} and
+		 (6371*acos( cos( radians( #{lat} )) * cos(radians( s.lat )) * cos(radians( s.lng )
+			-radians( #{lng} ))+sin( radians( #{lat} ))*sin( radians( s.lat )))) <= 0.5
+ 	 ORDER BY RAND() LIMIT 50
+		]]>
+	</select>
 	
 </mapper>

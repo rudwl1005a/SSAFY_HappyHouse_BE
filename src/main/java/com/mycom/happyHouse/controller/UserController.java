@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycom.happyHouse.entity.User;
+import com.mycom.happyHouse.dto.UserDto;
 import com.mycom.happyHouse.service.UserService;
 
 @RestController
@@ -27,20 +28,24 @@ public class UserController {
 
 	// 상세
 	@GetMapping(value = "/users/{userId}")
-	public User detail(@PathVariable String userId) {
+	public UserDto detail(@PathVariable String userId) {
 		return service.detail(userId);
 	}
 
 	// 목록
 	@GetMapping(value = "/users")
-	public List<User> list() {
+	public List<UserDto> list() {
+		System.out.println("list user : ");
 		return service.list();
 	}
 
 	// 등록
 	@PostMapping(value = "/users")
-	public ResponseEntity<Map<String, String>> register(User user) {
+	public ResponseEntity<Map<String, String>> register(@RequestBody UserDto user) {
 
+		System.out.println("register user : " + user);
+		user.setUserCode("101");
+		
 		Map<String, String> map = new HashMap<>();
 		try {
 			service.insert(user);
@@ -56,17 +61,17 @@ public class UserController {
 
 	// 수정
 	@PutMapping(value = "/users/{userId}")
-	public User modify(User user, @PathVariable String userId) {
-		return service.update(userId, user);
+	public int modify(@RequestBody UserDto user, @PathVariable String userId) {
+		System.out.println("modify user : " + user);
+		return service.update(user);
 	}
 
 	// 삭제
 	@DeleteMapping(value = "/users/{userId}")
 	public int delete(@PathVariable String userId, HttpSession session) {
 		try {
-			service.delete(userId);
 			session.invalidate();
-			return 1;
+			return service.delete(userId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return -1;

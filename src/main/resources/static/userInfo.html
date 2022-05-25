@@ -76,12 +76,10 @@
 		    sessionStorage.removeItem("userId");	
 			sessionStorage.removeItem("password");	
 			sessionStorage.removeItem("name");
-			sessionStorage.removeItem("authority");	
 			
 			sessionStorage.setItem("userId", data.userId);
 	    	sessionStorage.setItem("password", data.password);
 	    	sessionStorage.setItem("name", data.name);
-	    	sessionStorage.setItem("authority", data.authority);	
 		    
 		    alertify.alert('success!', '회원 수정을 완료하였습니다.', function(){
 				window.location.href="/userinfo";
@@ -107,7 +105,6 @@
 		    sessionStorage.removeItem("userId");	
 			sessionStorage.removeItem("password");	
 			sessionStorage.removeItem("name");
-			sessionStorage.removeItem("authority");	
 		    
 		    alertify.alert('success!', '회원 탈퇴를 완료하였습니다.', function(){
 				window.location.href="/index";

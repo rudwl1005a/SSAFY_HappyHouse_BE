@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.mycom.happyHouse.dao.UserDao">
+
+	<select id="list" resultType="com.mycom.happyHouse.dto.UserDto">
+		SELECT user_no, user_code, name, password, user_id
+		FROM user
+	</select>
+	
+	<select id="detail" parameterType="string" resultType="com.mycom.happyHouse.dto.UserDto">
+		SELECT user_no, user_code, name, password, user_id
+		FROM user
+		WHERE user_id = #{user_id}
+	</select>
+	
+	<insert id="insert" parameterType="com.mycom.happyHouse.dto.UserDto">
+		INSERT INTO user (user_code, name, password, user_id)
+		VALUES ( #{userCode}, #{name}, #{password}, #{userId})
+	</insert>
+	
+	<update id="update" parameterType="com.mycom.happyHouse.dto.UserDto">
+		UPDATE user
+		SET name = #{name}, password = #{password}
+		WHERE user_id = #{userId}
+	</update>
+	
+	<delete id="delete" parameterType="string">
+		DELETE FROM user
+		WHERE user_id = #{userId}
+	</delete>
+	
+</mapper>

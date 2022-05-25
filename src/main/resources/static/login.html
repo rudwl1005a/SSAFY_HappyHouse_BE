@@ -43,7 +43,6 @@
 		sessionStorage.removeItem("userId");
 		sessionStorage.removeItem("password");
 		sessionStorage.removeItem("name");	
-		sessionStorage.removeItem("authority");	
 		
 		document.querySelector("#btnLogin").onclick = async function(){
 			let userId = document.querySelector("#userId").value;
@@ -69,7 +68,6 @@
 			    	sessionStorage.setItem("userId", data.userId);
 			    	sessionStorage.setItem("password", data.password);
 			    	sessionStorage.setItem("name", data.name);
-			    	sessionStorage.setItem("authority", data.authority);
 			    	
 			    	window.location.href="/index";
 			    } else if( data.result == "fail" ){

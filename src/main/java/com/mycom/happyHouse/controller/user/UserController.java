@@ -1,4 +1,4 @@
-package com.mycom.happyHouse.controller;
+package com.mycom.happyHouse.controller.user;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycom.happyHouse.dto.UserDto;
-import com.mycom.happyHouse.service.UserService;
+import com.mycom.happyHouse.dto.user.UserDto;
+import com.mycom.happyHouse.service.user.UserService;
 
 @RestController
 public class UserController {

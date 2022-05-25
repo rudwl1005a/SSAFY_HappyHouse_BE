@@ -1,4 +1,4 @@
-package com.mycom.happyHouse.dto;
+package com.mycom.happyHouse.dto.board;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class NoticeDto {
+public class BoardParamDto {
+	private int limit;
+	private int offset;
+	private String searchWord;
+
 	private int boardId;
-	private String contents;
-	private String writer;
-	private String date;
+	private String userId;
+	private String boardCode;
 }

@@ -1,4 +1,4 @@
-package com.mycom.happyHouse.dto;
+package com.mycom.happyHouse.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,4 +17,6 @@ public class UserDto {
 	private String name;
 	private String password;
 	private String userId;
+	
+	private String token;
 }

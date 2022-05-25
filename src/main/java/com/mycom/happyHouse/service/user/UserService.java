@@ -1,8 +1,8 @@
-package com.mycom.happyHouse.service;
+package com.mycom.happyHouse.service.user;
 
 import java.util.List;
 
-import com.mycom.happyHouse.dto.UserDto;
+import com.mycom.happyHouse.dto.user.UserDto;
 
 public interface UserService {
 	List<UserDto> list();

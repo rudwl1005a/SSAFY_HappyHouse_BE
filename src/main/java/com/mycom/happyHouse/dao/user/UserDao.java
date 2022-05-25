@@ -1,10 +1,10 @@
-package com.mycom.happyHouse.dao;
+package com.mycom.happyHouse.dao.user;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.mycom.happyHouse.dto.UserDto;
+import com.mycom.happyHouse.dto.user.UserDto;
 
 @Mapper
 public interface UserDao {

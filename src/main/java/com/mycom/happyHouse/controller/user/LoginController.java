@@ -1,4 +1,4 @@
-package com.mycom.happyHouse.controller;
+package com.mycom.happyHouse.controller.user;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,14 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycom.happyHouse.dto.UserDto;
-import com.mycom.happyHouse.service.UserService;
+import com.mycom.happyHouse.dto.user.UserDto;
+import com.mycom.happyHouse.service.user.SecurityService;
+import com.mycom.happyHouse.service.user.UserService;
 
 @RestController
 public class LoginController {
 
 	@Autowired
 	UserService service;
+//	@Autowired
+//	private SecurityService securityService;
 
 	@PostMapping(value = "/login")
 	public ResponseEntity<Map<String, String>> login(@RequestBody UserDto loginUser, HttpSession session) {
@@ -39,6 +42,8 @@ public class LoginController {
 			map.put("password", user.getPassword());
 			map.put("name", user.getName());
 			map.put("userCode", user.getUserCode());
+//			String token = securityService.createToken(user.getUserId(), (1000 * 3600 *24)); // 1일
+//			map.put("token", token);
 
 			return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
 		}

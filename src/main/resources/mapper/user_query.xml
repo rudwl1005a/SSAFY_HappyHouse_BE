@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-<mapper namespace="com.mycom.happyHouse.dao.UserDao">
+<mapper namespace="com.mycom.happyHouse.dao.user.UserDao">
 
-	<select id="list" resultType="com.mycom.happyHouse.dto.UserDto">
+	<select id="list" resultType="com.mycom.happyHouse.dto.user.UserDto">
 		SELECT user_no, user_code, name, password, user_id
 		FROM user
 	</select>
 	
-	<select id="detail" parameterType="string" resultType="com.mycom.happyHouse.dto.UserDto">
+	<select id="detail" parameterType="string" resultType="com.mycom.happyHouse.dto.user.UserDto">
 		SELECT user_no, user_code, name, password, user_id
 		FROM user
 		WHERE user_id = #{user_id}
 	</select>
 	
-	<insert id="insert" parameterType="com.mycom.happyHouse.dto.UserDto">
+	<insert id="insert" parameterType="com.mycom.happyHouse.dto.user.UserDto">
 		INSERT INTO user (user_code, name, password, user_id)
 		VALUES ( #{userCode}, #{name}, #{password}, #{userId})
 	</insert>
 	
-	<update id="update" parameterType="com.mycom.happyHouse.dto.UserDto">
+	<update id="update" parameterType="com.mycom.happyHouse.dto.user.UserDto">
 		UPDATE user
 		SET name = #{name}, password = #{password}
 		WHERE user_id = #{userId}

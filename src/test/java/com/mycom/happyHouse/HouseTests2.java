@@ -107,9 +107,9 @@ class HouseTests2 {
 //			System.out.println(house);
 //		}
 		
-//		List<SubwayDto> list = houseDao.getSubwayList(1);				
-//		for(SubwayDto house : list) {
-//			System.out.println(house);
-//		}
+		List<SubwayDto> list = houseDao.getSubwayList(1);				
+		for(SubwayDto house : list) {
+			System.out.println(house);
+		}
 	}
 }

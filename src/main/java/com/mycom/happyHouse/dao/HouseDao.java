@@ -8,6 +8,8 @@ import com.mycom.happyHouse.dto.house.HouseDealDto;
 import com.mycom.happyHouse.dto.house.HouseInfoDto;
 import com.mycom.happyHouse.dto.house.HouseSearchParamDto;
 import com.mycom.happyHouse.dto.house.InterestDto;
+import com.mycom.happyHouse.dto.house.ShopInfoDto;
+import com.mycom.happyHouse.dto.house.ShopSearchParamDto;
 import com.mycom.happyHouse.dto.house.SubwayDto;
 
 @Mapper
@@ -35,5 +37,6 @@ public interface HouseDao {
 	
 	int deleteInterestApart(InterestDto dto);
 	
-	
+	//지역 상권 검색getShopList
+	List<ShopInfoDto> getShopList(ShopSearchParamDto dto);
 }

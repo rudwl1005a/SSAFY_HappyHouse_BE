@@ -12,6 +12,9 @@ import com.mycom.happyHouse.dto.house.HouseInfoDto;
 import com.mycom.happyHouse.dto.house.HouseSearchParamDto;
 import com.mycom.happyHouse.dto.house.HouseSearchResultDto;
 import com.mycom.happyHouse.dto.house.InterestDto;
+import com.mycom.happyHouse.dto.house.ShopInfoDto;
+import com.mycom.happyHouse.dto.house.ShopSearchParamDto;
+import com.mycom.happyHouse.dto.house.ShopSearchResultDto;
 import com.mycom.happyHouse.dto.house.SubwayDto;
 
 @Service
@@ -118,5 +121,20 @@ public class HouseServiceImpl implements HouseService{
 		}
 	}	
 
-
+	@Override
+	public ShopSearchResultDto getShopList(ShopSearchParamDto dto) {
+		List<ShopInfoDto> list = null;
+		ShopSearchResultDto result = new ShopSearchResultDto();
+		try {
+			list = dao.getShopList(dto);
+			
+			result.setList(list);
+			result.setResult(1);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.setResult(0);
+			return result;
+		}
+		return result;
+	}
 }

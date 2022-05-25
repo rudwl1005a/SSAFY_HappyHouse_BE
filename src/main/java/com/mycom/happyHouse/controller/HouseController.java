@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mycom.happyHouse.dto.house.HouseInfoDto;
 import com.mycom.happyHouse.dto.house.HouseSearchParamDto;
 import com.mycom.happyHouse.dto.house.HouseSearchResultDto;
+import com.mycom.happyHouse.dto.house.ShopSearchParamDto;
+import com.mycom.happyHouse.dto.house.ShopSearchResultDto;
 import com.mycom.happyHouse.service.HouseService;
 
 @RestController
@@ -49,7 +51,21 @@ public class HouseController {
 			System.out.println("result : Failed" );
 			return new ResponseEntity<HouseInfoDto>(result.getHouseInfoDto(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
 	}
 	
+	
+	@GetMapping(value="/shops") 
+	private ResponseEntity<ShopSearchResultDto> shopList(ShopSearchParamDto dto) {
+		System.out.println("call /aparts/shops" + dto);
+		ShopSearchResultDto result = houseService.getShopList(dto);
+		if(result.getResult() == 1) {
+			System.out.println("result : Success" );
+			return new ResponseEntity<ShopSearchResultDto>(result, HttpStatus.OK);
+		}
+		else {
+			System.out.println("result : Failed" );
+			return new ResponseEntity<ShopSearchResultDto>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
 }

@@ -9,6 +9,8 @@ import com.mycom.happyHouse.dto.house.HouseInfoDto;
 import com.mycom.happyHouse.dto.house.HouseSearchParamDto;
 import com.mycom.happyHouse.dto.house.HouseSearchResultDto;
 import com.mycom.happyHouse.dto.house.InterestDto;
+import com.mycom.happyHouse.dto.house.ShopSearchParamDto;
+import com.mycom.happyHouse.dto.house.ShopSearchResultDto;
 import com.mycom.happyHouse.dto.house.SubwayDto;
 
 public interface HouseService {
@@ -22,8 +24,10 @@ public interface HouseService {
 	HouseSearchResultDto getHouseInfoByAptCode(int aptCode);
 	
 	
-	
+	//관심 아파트 등록 및 삭제
 	int insertInterestApart(InterestDto dto);
 	
 	int deleteInterestApart(InterestDto dto);
+	
+	ShopSearchResultDto getShopList(ShopSearchParamDto dto);
 }

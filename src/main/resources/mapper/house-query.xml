@@ -204,4 +204,17 @@
 		WHERE user_id = #{userId} and aptCode = #{aptCode}
 	</delete>
 	
+	<!-- 주변 상권 검색 -->
+	<select id="getShopList" parameterType="com.mycom.happyHouse.dto.house.ShopSearchParamDto"  resultType="com.mycom.happyHouse.dto.house.ShopInfoDto" >
+	   <![CDATA[
+		SELECT shop_code, name, branch_name, commercial_code, commercial_name, classification, dongcode, 
+			   jibun1, jibun2, building, building_dong, floor, ho, lat, lng
+		  FROM shop s
+		 WHERE commercial_name = #{category} and
+		 (6371*acos( cos( radians( #{lat} )) * cos(radians( s.lat )) * cos(radians( s.lng )
+			-radians( #{lng} ))+sin( radians( #{lat} ))*sin( radians( s.lat )))) <= 0.5
+ 	 ORDER BY RAND() LIMIT 50
+		]]>
+	</select>
+	
 </mapper>

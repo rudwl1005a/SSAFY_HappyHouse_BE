@@ -36,7 +36,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
             "/js/**",
             "/img/**",
             "/users/**",
-            "/noticeboards/**"
+            "/noticeboards/**",
+            "/freeboards/**"
     };
 	
 	@Override

@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int delete(String userId) {
-		// 대댓글 삭제 -> 댓글 삭제 -> 게시글 삭제 -> 회원 탈퇴
+		// 대댓글 삭제 -> 댓글 삭제 -> 게시글 조회수 삭제 -> 게시글 삭제 -> 회원 탈퇴
 		return dao.delete(userId);
 	}
 

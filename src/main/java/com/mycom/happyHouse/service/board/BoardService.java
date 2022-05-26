@@ -14,10 +14,12 @@ public interface BoardService {
 
 	public BoardResultDto boardInsert(BoardDto dto);
 
+	public BoardResultDto myBoardList(String loginUserId, BoardParamDto boardParamDto);
 	public BoardResultDto freeBoardList(BoardParamDto boardParamDto);
 	public BoardResultDto QnABoardList(BoardParamDto boardParamDto);
 	public BoardResultDto noticeBoardList(BoardParamDto boardParamDto);
 	
+	public BoardResultDto myBoardListSearchWord(String loginUserId, BoardParamDto boardParamDto);
 	public BoardResultDto freeBoardListSearchWord(BoardParamDto boardParamDto);
 	public BoardResultDto QnABoardListSearchWord(BoardParamDto boardParamDto);
 	public BoardResultDto noticeBoardListSearchWord(BoardParamDto boardParamDto);

@@ -44,7 +44,7 @@ public class UserController {
 	public ResponseEntity<Map<String, String>> register(@RequestBody UserDto user) {
 
 		System.out.println("register user : " + user);
-		user.setUserCode("101");
+		user.setUserCode("101"); // 기본적으로 일반회원
 		
 		Map<String, String> map = new HashMap<>();
 		try {

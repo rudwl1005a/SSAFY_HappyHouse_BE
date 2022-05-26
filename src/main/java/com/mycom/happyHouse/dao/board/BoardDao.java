@@ -29,19 +29,23 @@ public interface BoardDao {
 
 	
 	// 게시물 목록
+	public List<BoardDto> myBoardList(BoardParamDto boardParamDto); // 내 게시물 목록
 	public List<BoardDto> freeBoardList(BoardParamDto boardParamDto); // 자유게시물 목록
 	public List<BoardDto> QnABoardList(BoardParamDto boardParamDto); // QnA게시물 목록
 	public List<BoardDto> noticeBoardList(BoardParamDto boardParamDto); // 공지사항 목록
 	
+	public int myBoardListTotalCount(String userId); // 내 게시물 전체 개수 (페이징)
 	public int freeBoardListTotalCount(); // 자유게시물 전체 개수 (페이징)
 	public int QnABoardListTotalCount(); // QnA목록 전체 개수 (페이징)
 	public int noticeBoardListTotalCount(); // 공지사항 전체 개수 (페이징)
 	
 	// 게시물 검색 목록
+	public List<BoardDto> myBoardListSearchWord(BoardParamDto boardParamDto); // 내 게시물 검색 결과 게시물 목록
 	public List<BoardDto> freeBoardListSearchWord(BoardParamDto boardParamDto); // 자유게시물 검색 결과 게시물 목록
 	public List<BoardDto> QnABoardListSearchWord(BoardParamDto boardParamDto); // QnA게시물 검색 결과 게시물 목록
 	public List<BoardDto> noticeBoardListSearchWord(BoardParamDto boardParamDto); // 공지사항 검색 결과 게시물 목록
 	
+	public int myBoardListSearchWordTotalCount(BoardParamDto boardParamDto); // 내 게시물 검색 결과 게시물 개수 (페이징)
 	public int freeBoardListSearchWordTotalCount(BoardParamDto boardParamDto); // 자유게시물 검색 결과 게시물 개수 (페이징)
 	public int QnABoardListSearchWordTotalCount(BoardParamDto boardParamDto); // QnA게시물 검색 결과 게시물 개수 (페이징)
 	public int noticeBoardListSearchWordTotalCount(BoardParamDto boardParamDto); // 공지사항 검색 결과 게시물 개수 (페이징)

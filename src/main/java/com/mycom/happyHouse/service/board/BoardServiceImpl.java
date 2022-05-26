@@ -47,6 +47,8 @@ public class BoardServiceImpl implements BoardService {
 	public BoardResultDto boardUpdate(BoardDto dto) {
 
 		BoardResultDto boardResultDto = new BoardResultDto();
+		
+		System.out.println("BoardUpdate : " + dto);
 
 		try {
 			dao.boardUpdate(dto);
@@ -64,6 +66,7 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public BoardResultDto boardDelete(int boardId) {
+		// 대댓글 삭제 -> 댓글 삭제 -> 게시글 조회수 삭제 -> 게시글 삭제
 
 		BoardResultDto boardResultDto = new BoardResultDto();
 
@@ -84,6 +87,8 @@ public class BoardServiceImpl implements BoardService {
 	public BoardResultDto boardDetail(BoardParamDto boardParamDto) {
 
 		BoardResultDto boardResultDto = new BoardResultDto();
+		
+		System.out.println("board Detail : " + boardParamDto);
 
 		try {
 			int userReadCnt = dao.boardUserReadCount(boardParamDto);
@@ -99,9 +104,28 @@ public class BoardServiceImpl implements BoardService {
 				boardDto.setSameUser(false);
 			}
 			
-			
-			
 			boardResultDto.setDto(boardDto);
+			boardResultDto.setResult(SUCCESS);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			boardResultDto.setResult(FAIL);
+		}
+
+		return boardResultDto;
+	}
+	
+	@Override
+	public BoardResultDto myBoardList(String loginUserId, BoardParamDto boardParamDto) {
+
+		BoardResultDto boardResultDto = new BoardResultDto();
+		boardParamDto.setLoginUserId(loginUserId);
+
+		try {
+			List<BoardDto> list = dao.myBoardList(boardParamDto);
+			int count = dao.myBoardListTotalCount(loginUserId);
+			boardResultDto.setList(list);
+			boardResultDto.setCount(count);
 			boardResultDto.setResult(SUCCESS);
 
 		} catch (Exception e) {
@@ -172,6 +196,29 @@ public class BoardServiceImpl implements BoardService {
 		return boardResultDto;
 	}
 
+	@Override
+	public BoardResultDto myBoardListSearchWord(String loginUserId, BoardParamDto boardParamDto) {
+
+		BoardResultDto boardResultDto = new BoardResultDto();
+		boardParamDto.setLoginUserId(loginUserId);
+
+		try {
+			List<BoardDto> list = dao.myBoardListSearchWord(boardParamDto);
+			int count = dao.myBoardListSearchWordTotalCount(boardParamDto);
+
+			boardResultDto.setList(list);
+			boardResultDto.setCount(count);
+
+			boardResultDto.setResult(SUCCESS);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			boardResultDto.setResult(FAIL);
+		}
+
+		return boardResultDto;
+	}
+	
 	@Override
 	public BoardResultDto freeBoardListSearchWord(BoardParamDto boardParamDto) {
 

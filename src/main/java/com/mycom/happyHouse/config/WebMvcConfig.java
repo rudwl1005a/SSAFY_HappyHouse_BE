@@ -17,7 +17,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*")
+        registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*").exposedHeaders("authorization")
         .allowedMethods(
         	RequestMethod.GET.name(),RequestMethod.POST.name(), RequestMethod.HEAD.name(),
         	RequestMethod.PUT.name(),RequestMethod.DELETE.name(), RequestMethod.OPTIONS.name()
@@ -25,12 +25,25 @@ public class WebMvcConfig implements WebMvcConfigurer {
         
     }
 	
-//	@Override
-//	public void addInterceptors(InterceptorRegistry registry) {
-//		registry.addInterceptor(loginInterceptor)
-//			.addPathPatterns("/**")
-//			.excludePathPatterns("/", "/index.html", "/login.html", "/register.html", "/logout", "/index")
-//			.excludePathPatterns("/login/**", "/register/**", "/notices", "/notices/**", "/css/**", "/js/**", "/img/**");
-//	}
+	private static final String[] EXCLUDE_PATHS = {
+			"/favicon.ico",
+            "/register/**",
+            "/login/**",
+            "/logout",
+            "/",
+            "/error",
+            "/css/**",
+            "/js/**",
+            "/img/**",
+            "/users/**",
+            "/noticeboards/**"
+    };
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(loginInterceptor)
+			.addPathPatterns("/**")
+			.excludePathPatterns(EXCLUDE_PATHS);
+	}
   
 }

@@ -78,16 +78,6 @@ public class HouseServiceImpl implements HouseService{
 			}
 			
 			dto.setHouseDealList(dao.getHouseDealList(aptCode));
-			
-			List<SubwayDto> subwayList = dao.getSubwayList(aptCode);
-			
-			
-			if(subwayList != null) {
-				subwayList.sort((a,b)-> a.getDistance().compareTo(b.getDistance()) );
-				if(subwayList.size() > 3) subwayList = subwayList.subList(0, 3);
-			}
-			
-			dto.setSubwayList(subwayList);
 			result.setHouseInfoDto(dto);
 			result.setResult(1);
 			
@@ -124,11 +114,20 @@ public class HouseServiceImpl implements HouseService{
 	@Override
 	public ShopSearchResultDto getShopList(ShopSearchParamDto dto) {
 		List<ShopInfoDto> list = null;
+		List<SubwayDto> subList = null;
 		ShopSearchResultDto result = new ShopSearchResultDto();
 		try {
-			list = dao.getShopList(dto);
+			if("지하철".equals(dto.getCategory())) {
+				subList = dao.getSubwayList(dto);
+				for(SubwayDto d : subList) {
+					System.out.println(d);
+				}
+			}
+			else list = dao.getShopList(dto);
 			
 			result.setList(list);
+			result.setSubList(subList);
+			
 			result.setResult(1);
 		}catch (Exception e) {
 			e.printStackTrace();

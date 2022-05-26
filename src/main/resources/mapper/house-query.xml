@@ -178,18 +178,18 @@
 		select no, aptCode, dealAmount, dealYear, dealMonth, dealDay, area, floor, type, rentMoney
 		from housedeal
 		where aptCode = #{aptCode}
+		order by no desc
 	</select>
 
 	<!-- 지하철 후보군 검색 쿼리 -->
-	<select id="getSubwayList" parameterType="int" resultType="com.mycom.happyHouse.dto.house.SubwayDto">
+	<select id="getSubwayList" parameterType="com.mycom.happyHouse.dto.house.ShopSearchParamDto" resultType="com.mycom.happyHouse.dto.house.SubwayDto">
 	   <![CDATA[
 		SELECT subway_id, line, station, sub.lat, sub.lng,
-		LEFT((6371*acos(cos(radians( apt.lat ))*cos(radians( sub.lat) )*cos( radians( sub.lng )
-			-radians( apt.lng ))+sin(radians( apt.lat ))*sin( radians(sub.lat )))), 5) AS distance  
-		FROM subway sub, 
-		(SELECT lat, lng FROM houseinfo where aptCode = #{aptCode}) as apt
-		WHERE (6371*acos( cos( radians( apt.lat )) * cos(radians( sub.lat )) * cos(radians( sub.lng )
-			-radians( apt.lng ))+sin( radians( apt.lat ))*sin( radians( sub.lat )))) <= 2
+		LEFT((6371*acos(cos(radians( #{lat} ))*cos(radians( sub.lat) )*cos( radians( sub.lng )
+			-radians( #{lng} ))+sin(radians( #{lat} ))*sin( radians(sub.lat )))), 5) AS distance  
+		FROM subway sub
+		WHERE (6371*acos(cos(radians( #{lat} ))*cos(radians( sub.lat) )*cos( radians( sub.lng )
+			-radians( #{lng} ))+sin(radians( #{lat} ))*sin( radians(sub.lat )))) <= 1
 		]]>
 	</select>
 	

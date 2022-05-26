@@ -1,5 +1,6 @@
 package com.mycom.happyHouse.controller.board;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mycom.happyHouse.dto.board.BoardDto;
 import com.mycom.happyHouse.dto.board.BoardParamDto;
 import com.mycom.happyHouse.dto.board.BoardResultDto;
+import com.mycom.happyHouse.dto.board.CommentDto;
 import com.mycom.happyHouse.service.board.BoardService;
+import com.mycom.happyHouse.service.board.CommentService;
 import com.mycom.happyHouse.service.user.JwtService;
 
 @RestController
@@ -29,9 +32,30 @@ public class BoardController {
 	BoardService service;
 	@Autowired
 	JwtService jwtService;
+	@Autowired
+	CommentService commentService;
 
 	private static final int SUCCESS = 1;
 
+	@GetMapping(value = "/myboards")
+	private ResponseEntity<BoardResultDto> myBoardList(BoardParamDto boardParamDto, @RequestHeader Map<String, Object> requestHeader) {
+
+		BoardResultDto boardResultDto;
+		String loginUserId = jwtService.getSubject((String)requestHeader.get("authorization"));
+
+		if (boardParamDto.getSearchWord().isEmpty()) {
+			boardResultDto = service.myBoardList(loginUserId, boardParamDto);
+		} else {
+			boardResultDto = service.myBoardListSearchWord(loginUserId, boardParamDto);
+		}
+
+		if (boardResultDto.getResult() == SUCCESS) {
+			return new ResponseEntity<BoardResultDto>(boardResultDto, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<BoardResultDto>(boardResultDto, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	@GetMapping(value = "/freeboards")
 	private ResponseEntity<BoardResultDto> freeBoardList(BoardParamDto boardParamDto) {
 
@@ -95,7 +119,13 @@ public class BoardController {
 		String userId = jwtService.getSubject((String)requestHeader.get("authorization"));
 		boardParamDto.setUserId(userId);
 		
+		// 댓글 가져오기
+		List<CommentDto> commentList = commentService.commentList(boardId);
+		List<CommentDto> recommentList = commentService.recommentList(boardId);
+		
 		BoardResultDto boardResultDto = service.boardDetail(boardParamDto);
+		boardResultDto.setCommentList(commentList);
+		boardResultDto.setRecommentList(recommentList);
 
 		if (boardResultDto.getResult() == SUCCESS) {
 			return new ResponseEntity<BoardResultDto>(boardResultDto, HttpStatus.OK);

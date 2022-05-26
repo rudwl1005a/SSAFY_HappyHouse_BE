@@ -114,6 +114,27 @@ public class BoardServiceImpl implements BoardService {
 
 		return boardResultDto;
 	}
+	
+	@Override
+	public BoardResultDto myBoardList(String loginUserId, BoardParamDto boardParamDto) {
+
+		BoardResultDto boardResultDto = new BoardResultDto();
+		boardParamDto.setLoginUserId(loginUserId);
+
+		try {
+			List<BoardDto> list = dao.myBoardList(boardParamDto);
+			int count = dao.myBoardListTotalCount(loginUserId);
+			boardResultDto.setList(list);
+			boardResultDto.setCount(count);
+			boardResultDto.setResult(SUCCESS);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			boardResultDto.setResult(FAIL);
+		}
+
+		return boardResultDto;
+	}
 
 	@Override
 	public BoardResultDto freeBoardList(BoardParamDto boardParamDto) {
@@ -175,6 +196,29 @@ public class BoardServiceImpl implements BoardService {
 		return boardResultDto;
 	}
 
+	@Override
+	public BoardResultDto myBoardListSearchWord(String loginUserId, BoardParamDto boardParamDto) {
+
+		BoardResultDto boardResultDto = new BoardResultDto();
+		boardParamDto.setLoginUserId(loginUserId);
+
+		try {
+			List<BoardDto> list = dao.myBoardListSearchWord(boardParamDto);
+			int count = dao.myBoardListSearchWordTotalCount(boardParamDto);
+
+			boardResultDto.setList(list);
+			boardResultDto.setCount(count);
+
+			boardResultDto.setResult(SUCCESS);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			boardResultDto.setResult(FAIL);
+		}
+
+		return boardResultDto;
+	}
+	
 	@Override
 	public BoardResultDto freeBoardListSearchWord(BoardParamDto boardParamDto) {
 

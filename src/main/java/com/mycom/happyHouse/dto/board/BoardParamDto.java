@@ -19,4 +19,6 @@ public class BoardParamDto {
 	private int boardId;
 	private String userId;
 	private String boardCode;
+	
+	private String loginUserId;
 }

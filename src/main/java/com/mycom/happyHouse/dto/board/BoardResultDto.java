@@ -18,5 +18,7 @@ public class BoardResultDto {
 	private BoardDto dto;
 	private List<BoardDto> list;
 	private int count;
+	private List<CommentDto> commentList;
+	private List<CommentDto> recommentList;
 }
 

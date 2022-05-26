@@ -45,6 +45,14 @@
 	
 	
 	<!-- reg_dt : LocalDateTime, check out BoardDto setter  -->
+	<select id="myBoardList" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE user_id = #{loginUserId}
+		 ORDER BY board_id DESC
+		 LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
 	<select id="freeBoardList" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
 		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
 		  FROM board
@@ -70,6 +78,10 @@
 	</select>
 	
 	
+	<select id="myBoardListTotalCount" resultType="int">
+		SELECT COUNT(*) FROM BOARD
+		 WHERE user_id = #{userId}
+	</select>
 	<select id="freeBoardListTotalCount" resultType="int">
 		SELECT COUNT(*) FROM BOARD
 		 WHERE board_code = '001'
@@ -83,6 +95,15 @@
 		 WHERE board_code = '003'
 	</select>
 
+	
+	<select id="myBoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
+		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
+		  FROM board
+		 WHERE user_id = #{loginUserId}
+		   AND title LIKE CONCAT('%', #{searchWord} ,'%')
+		 ORDER BY board_id DESC
+		 LIMIT #{limit} OFFSET #{offset}
+	</select>
 	
 	<select id="freeBoardListSearchWord" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">
 		SELECT board_id, board_code, user_id, title, content, reg_dt, read_count
@@ -111,6 +132,12 @@
 		 LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
+	
+	<select id="myBoardListSearchWordTotalCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		  FROM board
+		 WHERE title LIKE CONCAT('%', #{searchWord} ,'%') AND user_id = #{loginUserId}
+	</select>
 	
 	<select id="freeBoardListSearchWordTotalCount" parameterType="string" resultType="int">
 		SELECT COUNT(*)

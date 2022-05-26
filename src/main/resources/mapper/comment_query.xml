@@ -31,4 +31,20 @@
 		DELETE FROM comment WHERE parent_id = #{parentId}
 	</delete>
 	
+	<delete id="deleteCommentByUserId" parameterType="string">
+		DELETE FROM comment WHERE user_id = #{userId} AND ifnull(parent_id, 0) = 0
+	</delete>
+	
+	<delete id="deleteRecommentByUserId" parameterType="string">
+		DELETE FROM comment WHERE user_id = #{userId} AND ifnull(parent_id, 0) != 0
+	</delete>
+	
+	<delete id="deleteCommentByBoardId" parameterType="int">
+		DELETE FROM comment WHERE board_id = #{boardId} AND ifnull(parent_id, 0) = 0
+	</delete>
+	
+	<delete id="deleteRecommentByBoardId" parameterType="int">
+		DELETE FROM comment WHERE board_id = #{boardId} AND ifnull(parent_id, 0) != 0
+	</delete>
+	
 </mapper>

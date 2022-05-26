@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mycom.happyHouse.dao.board.BoardDao;
+import com.mycom.happyHouse.dao.board.CommentDao;
 import com.mycom.happyHouse.dao.user.UserDao;
 import com.mycom.happyHouse.dto.user.UserDto;
 
@@ -16,6 +18,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserDao dao;
+	@Autowired
+	BoardDao boardDao;
+	@Autowired
+	CommentDao commentDao;
 
 	@Override
 	public List<UserDto> list() {
@@ -40,6 +46,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int delete(String userId) {
 		// 대댓글 삭제 -> 댓글 삭제 -> 게시글 조회수 삭제 -> 게시글 삭제 -> 회원 탈퇴
+		commentDao.deleteRecommentByUserId(userId);
+		commentDao.deleteCommentByUserId(userId);
+		boardDao.boardReadCountDeleteByUserId(userId);
+		boardDao.boardDeleteByUserId(userId);
+		
 		return dao.delete(userId);
 	}
 

@@ -16,10 +16,10 @@ public interface CommentDao {
 	
 	public int deleteComment(int commentId);
 	public int deleteCommentByParentId(int parentId);
-//	public int deleteRecomment(int commentId);
-	/*
-	 * <delete id="deleteRecomment" parameterType="int">
-		DELETE FROM comment WHERE comment_id = #{commentId}
-	</delete>
-	 */
+	
+	public int deleteCommentByUserId(String userId);
+	public int deleteRecommentByUserId(String userId);
+	
+	public int deleteCommentByBoardId(int boardId);
+	public int deleteRecommentByBoardId(int boardId);
 }

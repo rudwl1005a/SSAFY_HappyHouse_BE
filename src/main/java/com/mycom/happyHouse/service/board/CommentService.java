@@ -12,5 +12,5 @@ public interface CommentService {
 	public int insertRecomment(CommentDto dto);
 	
 	public int deleteComment(int commentId);
-	public int deleteRecomment(int commnetId);
+	public int deleteRecomment(int commentId);
 }

@@ -1,16 +1,13 @@
 package com.mycom.happyHouse.service.board;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.mycom.happyHouse.dao.board.BoardDao;
+import com.mycom.happyHouse.dao.board.CommentDao;
 import com.mycom.happyHouse.dto.board.BoardDto;
 import com.mycom.happyHouse.dto.board.BoardParamDto;
 import com.mycom.happyHouse.dto.board.BoardResultDto;
@@ -20,6 +17,8 @@ public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	BoardDao dao;
+	@Autowired
+	CommentDao commentDao;
 
 	private static final int SUCCESS = 1;
 	private static final int FAIL = -1;
@@ -71,6 +70,9 @@ public class BoardServiceImpl implements BoardService {
 		BoardResultDto boardResultDto = new BoardResultDto();
 
 		try {
+			commentDao.deleteRecommentByBoardId(boardId);
+			commentDao.deleteCommentByBoardId(boardId);
+			
 			dao.boardReadCountDelete(boardId);
 			dao.boardDelete(boardId);
 			boardResultDto.setResult(SUCCESS);

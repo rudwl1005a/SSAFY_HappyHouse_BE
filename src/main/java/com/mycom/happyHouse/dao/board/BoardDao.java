@@ -26,6 +26,9 @@ public interface BoardDao {
 	
 	public int boardDelete(int boardId); // DB에서 게시물 삭제
 	public int boardReadCountDelete(int boardId); // 조회수 삭제
+	
+	public int boardDeleteByUserId(String userId); // DB에서 게시물 삭제
+	public int boardReadCountDeleteByUserId(String userId); // 조회수 삭제
 
 	
 	// 게시물 목록

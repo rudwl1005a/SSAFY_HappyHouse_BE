@@ -43,6 +43,14 @@
 		DELETE FROM board_user_read WHERE board_id = #{boardId}
 	</delete>
 	
+	<delete id="boardDeleteByUserId" parameterType="string">
+		DELETE FROM board WHERE user_id = #{userId}
+	</delete>
+	
+	<delete id="boardReadCountDeleteByUserId" parameterType="string">
+		DELETE FROM board_user_read WHERE user_id = #{userId}
+	</delete>
+	
 	
 	<!-- reg_dt : LocalDateTime, check out BoardDto setter  -->
 	<select id="myBoardList" parameterType="map" resultType="com.mycom.happyHouse.dto.board.BoardDto">

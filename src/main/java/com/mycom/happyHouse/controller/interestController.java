@@ -55,7 +55,7 @@ public class interestController {
 		}
 	}
 	@DeleteMapping(value="/{userId}/interest/aparts/{aptCode}") 
-	private ResponseEntity<Integer> insertInterestApt(@PathVariable String userId, @PathVariable int aptCode) {
+	private ResponseEntity<Integer> getInterestApt(@PathVariable String userId, @PathVariable int aptCode) {
 		System.out.println("call DELETE /" + userId + "/interest/aparts");
 		
 		int result = houseService.deleteInterestApart( new InterestDto(userId, aptCode, null) );

@@ -37,7 +37,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
             "/img/**",
             "/users/**",
             "/noticeboards/**",
-            "/freeboards/**"
+
+            "/freeboards/**",
+            "/assets/**",
+            "/vendor/**",
+            "/index.html"
     };
 	
 	@Override

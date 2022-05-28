@@ -3,7 +3,7 @@
 <mapper namespace="com.mycom.happyHouse.dao.board.BoardDao">
 
 	<insert id="boardInsert" parameterType="com.mycom.happyHouse.dto.board.BoardDto" useGeneratedKeys="true" keyProperty="boardId">
-		INSERT INTO BOARD ( user_id, board_code, title, content, reg_dt, read_count )
+		INSERT INTO board ( user_id, board_code, title, content, reg_dt, read_count )
 		            VALUES ( #{userId}, #{boardCode}, #{title}, #{content}, now(), 0 )
 	</insert>
 	
@@ -87,19 +87,19 @@
 	
 	
 	<select id="myBoardListTotalCount" resultType="int">
-		SELECT COUNT(*) FROM BOARD
+		SELECT COUNT(*) FROM board
 		 WHERE user_id = #{userId}
 	</select>
 	<select id="freeBoardListTotalCount" resultType="int">
-		SELECT COUNT(*) FROM BOARD
+		SELECT COUNT(*) FROM board
 		 WHERE board_code = '001'
 	</select>
 	<select id="QnABoardListTotalCount" resultType="int">
-		SELECT COUNT(*) FROM BOARD
+		SELECT COUNT(*) FROM board
 		 WHERE board_code = '002'
 	</select>
 	<select id="noticeBoardListTotalCount" resultType="int">
-		SELECT COUNT(*) FROM BOARD
+		SELECT COUNT(*) FROM board
 		 WHERE board_code = '003'
 	</select>
 
